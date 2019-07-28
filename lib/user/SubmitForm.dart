@@ -31,6 +31,7 @@ class _FormPageState extends State<FormPage> {
   static DatabaseReference ref = FirebaseDatabase.instance.reference();
   String _message;
   var report_status;
+  int reportcount = 0;
 
   final storage = new FlutterSecureStorage();
 
@@ -43,11 +44,11 @@ class _FormPageState extends State<FormPage> {
     // getemail().then(updateemail);
     // getuserid().then(updateuserid);
     get_user_detail();
-    reportstatus();
+    get_report_status();
     super.initState();
   }
 
-    Future get_user_detail() async{
+  Future get_user_detail() async{
     String userid = await storage.read(key: 'user-id');
     String username = await storage.read(key: 'user-name');
     String userimage = await storage.read(key: 'user-image');
@@ -59,17 +60,31 @@ class _FormPageState extends State<FormPage> {
     });
   }
 
-  Future reportstatus() async {
-    await Future.delayed(Duration(milliseconds: 100), () {
-      ref.child('user').child('$_userid').child('Report').once().then((DataSnapshot snap) {
-        var data = snap.value;
-        print('value of data :$data');
-        setState(() {
-          report_status = data;
-        });
-      });
+  Future get_report_status() async{
+    report_status = await storage.read(key: 'report-status');
+    
+    setState(() {
+      
     });
   }
+
+  // Future reportstatus() async {
+  //   await Future.delayed(Duration(milliseconds: 100), () {
+  //     ref.child('user').child('$_userid').child('Report').once().then((DataSnapshot snap) {
+  //       var data = snap.value.keys;
+
+  //       for(var key in data){
+  //         reportcount++;
+  //       }
+  //       print('value of data :$data');
+  //       setState(() {
+  //         if(reportcount>=10){
+  //           report_status = 'true';
+  //         }
+  //       });
+  //     });
+  //   });
+  // }
 
   void _submit() {
     final form = formKey.currentState;

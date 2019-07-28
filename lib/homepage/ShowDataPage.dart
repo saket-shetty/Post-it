@@ -55,6 +55,10 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  int reportcount=0;
+
+  var report_status;
+
 
   Future get_user_detail() async{
     String userimage = await storage.read(key: 'user-image');
@@ -85,6 +89,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
   @override
   void initState() {
+
+    reportstatus();
 
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
@@ -172,6 +178,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
+
+
   Future store_friend_detail(String friendid, friendimage, friendname) async{
     await storage.write(key: 'friend-id', value: '$friendid');
     await storage.write(key: 'friend-image', value: '$friendimage');
@@ -184,7 +192,28 @@ class _ShowDataPageState extends State<ShowDataPage> {
     await storage.write(key: 'user-name', value: '$username');
   }
 
-  
+
+  Future reportstatus() async {
+      print('This is reportstatus funct');
+      ref.child('user').child('550107170').child('Report').once().then((DataSnapshot snap) async {
+
+        var data = await snap.value.keys;
+
+        print(data);
+
+        for(var key in data){
+          reportcount++;
+          print('key :$key');
+        }
+        print('value of data :$data');
+        setState(() async {
+          if(reportcount>=10){
+            report_status = 'true';
+            await storage.write(key: 'report-status', value: '$report_status');
+          }
+        });
+      });
+  }
 
 
 
@@ -458,7 +487,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
                     color: Colors.redAccent,
                     icon: Icons.report,
                     onTap: (){
-                      ref.child('user').child('$userid').child('Report').set('true');
+                      ref.child('user').child('$userid').child('Report').child('$_userid').set('1');
                     },
                   ),
                 ),

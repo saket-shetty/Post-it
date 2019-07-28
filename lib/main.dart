@@ -73,6 +73,7 @@ class _homepageState extends State<homepage> {
 
     ref.child('user').child(userid).child('imageurl').set(photourl);
     ref.child('user').child(userid).child('name').set(displayname);
+    ref.child('user').child(userid).child('status').set('Tap to add status');
 
     return null;
   }
@@ -110,6 +111,10 @@ class _homepageState extends State<homepage> {
         store_user_detail(userid,image,name);
         store_token(accesstoken);
         read_token();
+
+        ref.child('user').child(userid).child('imageurl').set(image);
+        ref.child('user').child(userid).child('name').set(name);
+        ref.child('user').child(userid).child('status').set('Tap to add status');
 
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShowDataPage()));

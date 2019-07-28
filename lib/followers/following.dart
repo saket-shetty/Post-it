@@ -56,6 +56,7 @@ class _followingState extends State<following> {
 
   void delete_follow(var deletekey){
     ref.child('user').child('$_userid').child('following').child('$deletekey').remove();
+    ref.child('user').child('$deletekey').child('follower').child('$_userid').remove();
     Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(builder: (context)=> following()));
   }
@@ -92,32 +93,37 @@ class _followingState extends State<following> {
               padding: const EdgeInsets.all(8.0),
               child: new Row(
                 children: <Widget>[
-                new Container(
-                  width: 55,
-                  height: 55,
-                  decoration: new BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: NetworkImage('$image_url'),
-                      fit: BoxFit.fill,
+                  
+                  new Container(
+                    width: 55,
+                    height: 55,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage('$image_url'),
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                ),
-                new Padding(
-                  padding: new EdgeInsets.all(5.0),
-                ),
-                new Text('$name'),
 
-                new IconButton(
-                    icon: new Icon(Icons.cancel),
-                    alignment: Alignment.bottomRight,
-                    onPressed: (){
-                      print('cancel is clicked $key');
-                      delete_follow(key);
-                  }
+                  new Padding(
+                    padding: new EdgeInsets.all(5.0),
+                  ),
+
+                  new Text('$name'),
+                
+                  Expanded(
+                    child: new IconButton(
+                      icon: new Icon(Icons.cancel),
+                      alignment: Alignment.bottomRight,
+                      onPressed: (){
+                        print('cancel is clicked $key');
+                        delete_follow(key);
+                    }
+                  ),
                 ),
               ],
-            ),
+              ),
             ),
           ),
         ],

@@ -49,13 +49,14 @@ class _followerState extends State<follower> {
         
         });
       });
-
+ 
       });
     }
   }
 
   void delete_follow(var deletekey){
     ref.child('user').child('$_userid').child('follower').child('$deletekey').remove();
+    ref.child('user').child('$deletekey').child('following').child('$_userid').remove();
     Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(builder: (context)=> follower()));
   }

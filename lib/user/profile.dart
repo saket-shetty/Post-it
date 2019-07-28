@@ -23,10 +23,16 @@ class _profileState extends State<profile> {
   int _newcount;
   String _userid;
 
+  var status;
+
   final storage = new FlutterSecureStorage();
 
   final FirebaseAuth _fAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+  bool displaystatus = true;
+
+  TextEditingController _status = new TextEditingController();
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
@@ -93,6 +99,17 @@ class _profileState extends State<profile> {
         });
       });
 
+      //.........................USER STATUS..........................................
+
+      ref.child('user').child('$userid').child('status').once().then((DataSnapshot snap) async{
+        var statusvalue = await snap.value;
+        print('status :$statusvalue');
+
+        setState(() {
+          status = statusvalue;
+          _status.text = status;
+        });
+      });
 
     }
 
@@ -142,17 +159,17 @@ class _profileState extends State<profile> {
             child: Column(
               children: <Widget>[
                 Container(
-                    width: 150.0,
-                    height: 150.0,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        image: DecorationImage(
-                            image: CachedNetworkImageProvider(_newurl),
-                            fit: BoxFit.cover,),
-                        borderRadius: BorderRadius.all(Radius.circular(75.0)),
-                        boxShadow: [
-                          BoxShadow(blurRadius: 7.0, color: Colors.black)
-                        ])),
+                  width: 150.0,
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(_newurl),
+                          fit: BoxFit.cover,),
+                      borderRadius: BorderRadius.all(Radius.circular(75.0)),
+                      boxShadow: [
+                        BoxShadow(blurRadius: 7.0, color: Colors.black)
+                      ])),
                 SizedBox(height: 10.0),
                 Text(
                   '$_newname',
@@ -164,14 +181,67 @@ class _profileState extends State<profile> {
                     ),
                 ),
                 SizedBox(height: 10.0),
-                Text(
-                  'Today you, Tomorrow me',
-                  style: TextStyle(
-                      fontSize: 17.0,
-                      fontStyle: FontStyle.italic,
-                      fontFamily: 'Montserrat',
-                      color: Colors.white  
+
+                displaystatus == true ?
+
+                GestureDetector(
+                  onTap: (){
+                    displaystatus = false;
+                    print('status click');
+                    setState(() {
+                      
+                    });
+                  },
+                  child: Text(
+                    '$status',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 17.0,
+                        fontStyle: FontStyle.italic,
+                        fontFamily: 'Montserrat',
+                        color: Colors.white,
+                        
+                      ),
+                  ),
+                )
+
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.only(left:8.0, right: 8.0),
+                      width: MediaQuery.of(context).size.width-50,
+                      child: new TextFormField(
+                        autofocus: true,
+                        style: new TextStyle(
+                          color: Colors.white
+                        ),
+                        cursorColor: Colors.deepPurpleAccent,
+                        controller: _status,
+                        decoration: new InputDecoration(
+                          hintText: 'Status',
+                          contentPadding: EdgeInsets.fromLTRB(20.0,5.0, 20.0, 13.0),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0),),
+                        )
+                      ),
                     ),
+                    new IconButton(
+                      icon:Icon(
+                        Icons.send,
+                        color: Colors.deepPurpleAccent,
+                      ),
+                      onPressed: (){
+                        displaystatus = true;
+                        print('${_status.text}');
+                        setState(() {
+                          ref.child('user').child('$_userid').child('status').set(_status.text);
+                          setState(() {
+                            
+                          });
+                        });
+                      },
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: 15.0),

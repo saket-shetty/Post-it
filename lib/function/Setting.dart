@@ -6,9 +6,22 @@ class setting extends StatefulWidget {
 }
 
 class _settingState extends State<setting> {
+
+  TextEditingController _status = new TextEditingController();
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  } 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.deepPurpleAccent,
@@ -18,7 +31,7 @@ class _settingState extends State<setting> {
             fontWeight: FontWeight.w300,
           ),
         ),
-      ),
+      ), 
     );
   }
 }
