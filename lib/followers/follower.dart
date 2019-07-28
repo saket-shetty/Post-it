@@ -5,13 +5,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class followers extends StatefulWidget {
+class follower extends StatefulWidget {
   @override
-  _followersState createState() => _followersState();
+  _followerState createState() => _followerState();
 }
 
 
-class _followersState extends State<followers> {
+class _followerState extends State<follower> {
   DatabaseReference ref = FirebaseDatabase.instance.reference();
   List<myFollower> allData = [];
   var _userid='';
@@ -57,7 +57,7 @@ class _followersState extends State<followers> {
   void delete_follow(var deletekey){
     ref.child('user').child('$_userid').child('follower').child('$deletekey').remove();
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> followers()));
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> follower()));
   }
 
   @override
@@ -65,7 +65,7 @@ class _followersState extends State<followers> {
     return Scaffold(
       appBar: new AppBar(
         centerTitle: true,
-        title: new Text('Following'),
+        title: new Text('Followers'),
       ),
       body: new Container(
         child: allData.length == 0

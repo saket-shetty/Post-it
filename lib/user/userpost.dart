@@ -33,7 +33,6 @@ class _userpostState extends State<userpost> {
     get_user_detail();
 
     setState(() {});
-    print('userid is :$_userid');
     _comments();
     // get email of the user
   }
@@ -56,25 +55,13 @@ class _userpostState extends State<userpost> {
       () {
         print("user id :$_userid");
 
-        ref.child('user').child('$_userid').once().then((DataSnapshot snap) {
+        ref.child('user').child('$_userid').child('post').once().then((DataSnapshot snap) {
           var data = snap.value;
           var key = snap.value.keys;
 
-          name = data['name'];
-          imageurl = data['imageurl'];
-
-          print('$name');
-          print('$imageurl');
-
           for(var y in key){
-            print('this is y :$y');
-            if(y=='name' || y=='about' || y=='imageurl' || y=='Report' || y=='follower'){
-              print('name :$y');
-            }
-            else{
-              print('normal :$y');
-              normalkey.add(y);
-            }
+            print('normal :$y');
+            normalkey.add(y);
           }
 
           for(var x in normalkey){
@@ -216,7 +203,7 @@ class _userpostState extends State<userpost> {
                   shape: BoxShape.circle,
                   image: new DecorationImage(
                     fit: BoxFit.fill,
-                    image: new NetworkImage('$imageurl'),
+                    image: new NetworkImage('$_newimgurl'),
                   ),
                 ),
               ),
@@ -227,7 +214,7 @@ class _userpostState extends State<userpost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   new Text(
-                    '$name',
+                    '$_newname',
 //                    style: TextStyle(color: Colors.white),
                   ),
                   new Text(

@@ -105,7 +105,7 @@ class _friendpostState extends State<friendpost> {
         centerTitle: true,
         backgroundColor: Colors.deepPurpleAccent,
         title: new Text(
-          'YOU POSTED',
+          'POST',
           style: new TextStyle(fontWeight: FontWeight.w300),
         ),
       ),

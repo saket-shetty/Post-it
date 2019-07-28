@@ -104,8 +104,8 @@ class _FormPageState extends State<FormPage> {
       ref.child('node-name').child('$time').child('userid').set('$_userid');
       ref.child('node-name').child('$time').child('comments').child('no-comments').set('1');
       ref.child('node-name').child('$time').child('likes').child('no-likes').set('1');
-      ref.child('user').child('$_userid').child('$time').child('message').set('$_message');
-      ref.child('user').child('$_userid').child('$time').child('msgtime').set('$date');
+      ref.child('user').child('$_userid').child('post').child('$time').child('message').set('$_message');
+      ref.child('user').child('$_userid').child('post').child('$time').child('msgtime').set('$date');
       ref.child('user').child('$_userid').child('name').set('$_newname');
       ref.child('user').child('$_userid').child('imageurl').set('$_newurl');
       Navigator.of(context).pop();

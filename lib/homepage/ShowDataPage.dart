@@ -85,6 +85,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
   @override
   void initState() {
+
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
     //snap.value will give the json format value and snap.value.key will give all the child/key the json contains.
@@ -93,7 +94,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
     get_user_detail();
 
-    ref.child('node-name').limitToLast(10).once().then((DataSnapshot snap) {
+    ref.child('node-name').limitToLast(20).once().then((DataSnapshot snap) {
       var keys = snap.value.keys;
       var data = snap.value;
 
@@ -193,6 +194,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
       onWillPop: () async => false,
       child: Scaffold(
         key: scaffoldKey,
+        backgroundColor: Colors.white,
         appBar: new AppBar(
           backgroundColor: Colors.deepPurpleAccent,
           centerTitle: true,
@@ -274,7 +276,10 @@ class _ShowDataPageState extends State<ShowDataPage> {
             ],
           ),
         ),
+
         bottomNavigationBar: BottomNavigationBar(
+        // backgroundColor: Color.fromRGBO(64, 75, 96, .9),
+
           currentIndex: _onTapIndex,
           onTap: (int index) {
             setState(() {
@@ -303,11 +308,11 @@ class _ShowDataPageState extends State<ShowDataPage> {
             ),
             BottomNavigationBarItem(
               icon: new Icon(Icons.add),
-              title: new Text('post it'),
+              title: new Text('POST'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              title: Text('Profile'),
+              title: Text('PROFILE'),
             ),
           ],
         ),
@@ -525,9 +530,9 @@ class _ShowDataPageState extends State<ShowDataPage> {
               padding: EdgeInsets.only(bottom: 15.0),
             ),
           ],
-        ),
-      ),
-    );
+          ),
+        )
+      );
   }
 
   Future<Null> _handleRefresh() async {

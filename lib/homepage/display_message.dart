@@ -166,7 +166,7 @@ class _displaymessageState extends State<displaymessage> {
     var size = MediaQuery.of(context).size.width;
     var toppadding = MediaQuery.of(context).padding.top;
     return Scaffold(
-      backgroundColor: Colors.white70,
+      backgroundColor: Color.fromRGBO(64, 75, 96, .9),
       body: new Column(
         children: <Widget>[
           new Container(
@@ -180,15 +180,18 @@ class _displaymessageState extends State<displaymessage> {
                   child: new Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      new Container(
-                        width: 55.0,
-                        height: 55.0,
-                        //margin: EdgeInsets.only(top: 30.0),
-                        decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                            fit: BoxFit.fill,
-                            image: new NetworkImage(_newurl),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
+                        child: new Container(
+                          width: 45.0,
+                          height: 45.0,
+                          //margin: EdgeInsets.only(top: 30.0),
+                          decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: new DecorationImage(
+                              fit: BoxFit.fill,
+                              image: new NetworkImage(_newurl),
+                            ),
                           ),
                         ),
                       ),
@@ -199,7 +202,8 @@ class _displaymessageState extends State<displaymessage> {
                         '$_newname',
                         style: new TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w300,
                         ),
                       )
                     ],
@@ -377,7 +381,7 @@ class _displaymessageState extends State<displaymessage> {
                                 autofocus: true,
                                 decoration: new InputDecoration(
                                   hintText: 'Write a Comment',
-                                
+                                  
                                   contentPadding: EdgeInsets.fromLTRB(20.0,5.0, 20.0, 13.0),
                                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
                                 ),
@@ -387,7 +391,7 @@ class _displaymessageState extends State<displaymessage> {
                                     : null,
                                 style: new TextStyle(
                                   fontSize: 18.0,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                                 onSaved: (val) => _message = val,
                               ),
@@ -465,8 +469,8 @@ class _displaymessageState extends State<displaymessage> {
                     '$cmnt',
                     maxLines: 2,
                     style: new TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300,
                       fontSize: 15.0,
                     ),
                     textAlign: TextAlign.start,
@@ -477,8 +481,8 @@ class _displaymessageState extends State<displaymessage> {
                   new Text(
                     '$cmnt_name',
                     style: new TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
                       fontSize: 12,
                     ),
                   )

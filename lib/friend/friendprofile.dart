@@ -16,6 +16,8 @@ class _friendprofileState extends State<friendprofile> {
   var _friendimageurl;
   var _friendid;
   var _userid;
+  var _username;
+  var _userimage;
 
   final storage = new FlutterSecureStorage();
 
@@ -44,8 +46,12 @@ class _friendprofileState extends State<friendprofile> {
 
   Future get_user_id() async{
     String userid = await storage.read(key:'user-id');
+    String username = await storage.read(key:'user-name');
+    String userimage = await storage.read(key:'user-image');
     setState((){
       _userid = userid;
+      _username = username;
+      _userimage = userimage;
     });
   }
 
@@ -91,8 +97,10 @@ class _friendprofileState extends State<friendprofile> {
                               print('friend added');
                               print('real user id $_userid');
                               print('friend user id $_friendid');
-                              ref.child('user').child('$_userid').child('follower').child('$_friendid').child('name').set('$_friendname');
-                              ref.child('user').child('$_userid').child('follower').child('$_friendid').child('image_url').set('$_friendimageurl');
+                              ref.child('user').child('$_userid').child('following').child('$_friendid').child('name').set('$_friendname');
+                              ref.child('user').child('$_userid').child('following').child('$_friendid').child('image_url').set('$_friendimageurl');
+                              ref.child('user').child('$_friendid').child('follower').child('$_userid').child('name').set('$_username');
+                              ref.child('user').child('$_friendid').child('follower').child('$_userid').child('image_url').set('$_userimage');
                             },
                           )
                         ],
