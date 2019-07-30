@@ -90,6 +90,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
   @override
   void initState() {
 
+    get_user_detail();
     reportstatus();
 
     //retrieving data from firebase database
@@ -98,7 +99,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
     print('init is calling');
 
-    get_user_detail();
 
     ref.child('node-name').limitToLast(20).once().then((DataSnapshot snap) {
       var keys = snap.value.keys;
@@ -567,8 +567,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
     setState(() {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+      Navigator.pop(context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ShowDataPage()));
     });
     return null;
   }

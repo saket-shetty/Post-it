@@ -54,7 +54,7 @@ class _friendpostState extends State<friendpost> {
           () {
         print("user id :$_userid");
 
-        ref.child('user').child('$_userid').once().then((DataSnapshot snap) {
+        ref.child('user').child('$_userid').child('post').once().then((DataSnapshot snap) {
           var data = snap.value;
           var key = snap.value.keys;
 
@@ -65,15 +65,8 @@ class _friendpostState extends State<friendpost> {
           print('$imageurl');
 
           for(var y in key){
-            print('this is y :$y');
-            if(y=='name' || y=='Report' || y=='imageurl' || y=='follower'){
-              print('name :$y');
-            }
-            else{
               print('normal :$y');
               normalkey.add(y);
-            }
-
           }
           List list =[];
           for (var x in normalkey){
@@ -217,7 +210,7 @@ class _friendpostState extends State<friendpost> {
                   shape: BoxShape.circle,
                   image: new DecorationImage(
                     fit: BoxFit.fill,
-                    image: new NetworkImage('$imageurl'),
+                    image: new NetworkImage('$_newimgurl'),
                   ),
                 ),
               ),
@@ -228,7 +221,7 @@ class _friendpostState extends State<friendpost> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   new Text(
-                    '$name',
+                    '$_newname',
 //                    style: TextStyle(color: Colors.white),
                   ),
                   new Text(

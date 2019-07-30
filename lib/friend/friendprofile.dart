@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebaseapp/friend/friend_follower.dart';
+import 'package:firebaseapp/friend/friend_following.dart';
 import 'package:flutter/material.dart';
 import 'package:firebaseapp/user/profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/friend/friendpost.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class friendprofile extends StatefulWidget {
@@ -12,12 +14,26 @@ class friendprofile extends StatefulWidget {
 
 class _friendprofileState extends State<friendprofile> {
 
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
   var _friendname;
   var _friendimageurl;
   var _friendid;
   var _userid;
   var _username;
   var _userimage;
+
+  //.................PROFILE VARIABLE...............................
+
+  int postcount = 0;
+  int followercount = 0;
+  int followingcount = 0;
+
+  var status;
+  var _about;
+
+
 
   final storage = new FlutterSecureStorage();
 
@@ -36,6 +52,74 @@ class _friendprofileState extends State<friendprofile> {
     String friend_image = await storage.read(key: 'friend-image');
     String friend_name = await storage.read(key: 'friend-name');
 
+        if(friend_id != null){
+
+      //............................FOLLOWING COUNT OF USER.............................
+
+      ref.child('user').child('$friend_id').child('following').once().then((DataSnapshot snap) async{
+        var key = await snap.value.keys;
+
+        for(var following in key){
+          followingcount++;
+        }
+        print('this is keys ${key}');
+        setState(() {
+          
+        });
+      });
+
+      //............................POST COUNT OF USER.............................
+
+      ref.child('user').child('$friend_id').child('post').once().then((DataSnapshot snap) async{
+        var key = await snap.value.keys;
+        for(var post in key){
+          postcount ++;
+        }
+        print('post count :$postcount');
+        print('Post key :$key');
+
+        setState(() {
+          
+        });
+      });
+
+      //............................FOLLOWERS COUNT OF USER.............................
+
+      ref.child('user').child('$friend_id').child('follower').once().then((DataSnapshot snap) async{
+        var key = await snap.value.keys;
+        for(var post in key){
+          followercount++;
+        }
+        print('follower count :$followercount');
+        print('Post key :$key');
+
+        setState(() {
+          
+        });
+      });
+
+      //.........................USER STATUS..........................................
+
+      ref.child('user').child('$friend_id').child('status').once().then((DataSnapshot snap) async{
+        var statusvalue = await snap.value;
+        print('status :$statusvalue');
+
+        setState(() {
+          status = statusvalue;
+        });
+      });
+
+      ref.child('user').child('$friend_id').child('about').once().then((DataSnapshot snap) async{
+        var about = await snap.value;
+        print('about :$about');
+
+        setState(() {
+          _about = about;
+        });
+      });
+
+    }
+
     setState(() {
       _friendname = friend_name;
       _friendid = friend_id;
@@ -43,6 +127,10 @@ class _friendprofileState extends State<friendprofile> {
     });
     // print('friend ka id hai :$value');
   }
+
+  TextStyle textstyle = new TextStyle(
+    color: Colors.white,
+  );
 
   Future get_user_id() async{
     String userid = await storage.read(key:'user-id');
@@ -55,6 +143,15 @@ class _friendprofileState extends State<friendprofile> {
     });
   }
 
+  _snackbar() {
+    final snackbar = new SnackBar(
+      content: new Text('STARTED FOLLOWING'),
+      duration: new Duration(milliseconds: 2000),
+      backgroundColor: Colors.green,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
 
   void changepage() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => profile()));
@@ -64,129 +161,203 @@ class _friendprofileState extends State<friendprofile> {
   Widget build(BuildContext context) {
     var _height = MediaQuery.of(context).padding.top;
     return Scaffold(
-      body: _friendname == null
-          ? new Center(
-              child: FlareActor(
-                'asset/linear.flr',
-                animation: 'linear',
-                fit: BoxFit.contain,
-              ),
-            )
-          : new Stack(
+      key: scaffoldKey,
+      backgroundColor: Color.fromRGBO(64, 75, 96, .9),
+
+      appBar: new AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        title: new Text("PROFILE",
+        
+          style: new TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.w300,
+
+          ),
+        ),
+      ),
+
+      body:
+      
+       new Stack(
+        children: <Widget>[
+          Positioned(
+            width: MediaQuery.of(context).size.width,
+            top: 30.0,
+            child: Column(
               children: <Widget>[
-                ClipPath(
-                  child: Container(color: Colors.black.withOpacity(0.8)),
-                  clipper: getClipper(),
+                Container(
+                  width: 150.0,
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                      color: Colors.red,
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(_friendimageurl),
+                          fit: BoxFit.cover,),
+                      borderRadius: BorderRadius.all(Radius.circular(75.0)),
+                      boxShadow: [
+                        BoxShadow(blurRadius: 7.0, color: Colors.black)
+                      ])),
+                SizedBox(height: 10.0),
+                Text(
+                  '$_friendname',
+                  style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Montserrat',
+                      color: Colors.blue  
+                    ),
                 ),
-                Positioned(
-                  width: 350.0,
-                  top: MediaQuery.of(context).size.height / 5,
-                  child: Column(
-                    children: <Widget>[
-                      new Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                SizedBox(height: 10.0),
+
+                Text(
+                  '$status',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 17.0,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                      
+                    ),
+                ),
+
+                SizedBox(height: 15.0),
+
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendfollower()));
+                      },
+                      child: new Column(
                         children: <Widget>[
-                          GestureDetector(
-                            child: new Icon(
-                              Icons.person_add,
-                              size: 30.0,
-                              color: Colors.black,
-                            ),
-                            onTap: (){
-                              print('friend added');
-                              print('real user id $_userid');
-                              print('friend user id $_friendid');
-                              ref.child('user').child('$_userid').child('following').child('$_friendid').child('name').set('$_friendname');
-                              ref.child('user').child('$_userid').child('following').child('$_friendid').child('image_url').set('$_friendimageurl');
-                              ref.child('user').child('$_friendid').child('follower').child('$_userid').child('name').set('$_username');
-                              ref.child('user').child('$_friendid').child('follower').child('$_userid').child('image_url').set('$_userimage');
-                            },
+                          new Text('$followercount',
+                            style: textstyle,
+                          ),
+                          new Text('Followers',
+                            style: textstyle,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Container(color: Colors.black45, height: 30.0, width: 2,),
+
+                    new GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendfollowing()));
+                      },
+                      child: new Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Text('$followingcount',
+                            style: textstyle,
+                          ),
+                          new Text('Following',
+                            style: textstyle,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Container(color: Colors.black45, height: 30.0, width: 2,),
+
+                    new GestureDetector(
+                      onTap: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => friendpost()));
+                      },
+                      child: new Column(
+                        children: <Widget>[
+                          new Text('$postcount',
+                            style: textstyle,
+                          ),
+                          new Text('Post',
+                            style: textstyle,
                           )
                         ],
                       ),
-                     Container(
-                          width: 150.0,
-                          height: 150.0,
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              image: DecorationImage(
-                                  image: NetworkImage(_friendimageurl),
-                                  fit: BoxFit.cover),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(75.0)),
-                              boxShadow: [
-                                BoxShadow(blurRadius: 7.0, color: Colors.black)
-                              ])),
-                      SizedBox(height: 30.0),
-                      Text(
-                        '$_friendname',
-                        style: TextStyle(
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Montserrat'),
-                      ),
-                      SizedBox(height: 15.0),
-                      Text(
-                        'STATUS',
-                        style: TextStyle(
-                            fontSize: 17.0,
-                            fontStyle: FontStyle.italic,
-                            fontFamily: 'Montserrat'),
-                      ),
-                      SizedBox(height: 25.0),
-                      GestureDetector(
+                    ),
+
+                  ],
+                ),
+
+                SizedBox(height: 15.0),
+
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new Container(
+                      width: MediaQuery.of(context).size.width/2-50,
+                      height: 40.0,
+                      child: new InkWell(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => friendpost()));
+                          ref.child('user').child('$_userid').child('following').child('$_friendid').child('name').set('$_friendname');
+                          ref.child('user').child('$_userid').child('following').child('$_friendid').child('image_url').set('$_friendimageurl');
+                          ref.child('user').child('$_friendid').child('follower').child('$_userid').child('name').set('$_username');
+                          ref.child('user').child('$_friendid').child('follower').child('$_userid').child('image_url').set('$_userimage');
+                          _snackbar();
                         },
-                        child: Container(
-                            height: 40.0,
-                            width: 105.0,
-                            child: Material(
-                              borderRadius: BorderRadius.circular(20.0),
-                              shadowColor: Colors.greenAccent,
-                              color: Colors.green,
-                              elevation: 7.0,
-                              child: Center(
-                                child: Text(
-                                  'POSTS',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Montserrat'),
-                                ),
+                        child: Material(
+                          borderRadius: BorderRadius.circular(25.0),
+                          color: Colors.redAccent,
+                          shadowColor: Colors.redAccent.withOpacity(0.8),
+                          elevation: 7.0,
+                          child: Center(
+                            child: new Text(
+                              'FOLLOW',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w300,
                               ),
-                            )),
+                            ),
+                          ),
+                        ),
                       ),
-                      SizedBox(height: 25.0),
-                    ],
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 15.0),
+
+                new Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        new Text('About',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0
+                          ),
+                        ),
+
+                        new Text('$_about',
+                          style: new TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.white
+                          ),
+                        ),
+                          
+
+                      ],
+                    ),
                   ),
-                )
+                ),
+
               ],
             ),
+          )
+        ],
+      ),
     );
   }
 }
 
-
-
-class getClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = new Path();
-
-    path.lineTo(0.0, size.height/2);
-    path.lineTo(size.width + 125, 0.0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    // TODO: implement shouldReclip
-    return true;
-  }
-}
 //end

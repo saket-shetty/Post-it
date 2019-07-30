@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebaseapp/data/myFollowing.dart';
+import 'package:firebaseapp/data/myFollower.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class following extends StatefulWidget {
+class friendfollower extends StatefulWidget {
   @override
-  _followingState createState() => _followingState();
+  _friendfollowerState createState() => _friendfollowerState();
 }
 
 
-class _followingState extends State<following> {
+class _friendfollowerState extends State<friendfollower> {
   DatabaseReference ref = FirebaseDatabase.instance.reference();
-  List<myFollowing> allData = [];
+  List<myFollower> allData = [];
   var _userid='';
 
   final storage = new FlutterSecureStorage();
@@ -25,16 +25,16 @@ class _followingState extends State<following> {
   }
 
   Future get_user_id() async{
-    String user_id = await storage.read(key: 'user-id');
-    print('ye chalega kya $user_id');
+    String friend_id = await storage.read(key: 'friend-id');
+    print('ye chalega kya $friend_id');
 
     setState(() {
-        _userid = user_id;
+        _userid = friend_id;
     });
 
-    if(user_id != null){
+    if(friend_id != null){
       await Future.delayed(Duration(milliseconds: 300),(){
-      ref.child('user').child('$_userid').child('following').once().then((DataSnapshot snap) async{
+      ref.child('user').child('$friend_id').child('follower').once().then((DataSnapshot snap) async{
       var key = await snap.value.keys;
       var data = await snap.value;
 
@@ -42,23 +42,16 @@ class _followingState extends State<following> {
       print('these are keys $key');
 
       for(var keys in key){
-        myFollowing myfollo = new myFollowing(keys,data['$keys']['name'], data['$keys']['image_url']);
+        myFollower myfollo = new myFollower(keys,data['$keys']['name'], data['$keys']['image_url']);
         allData.add(myfollo);
       }
       setState(() {
         
         });
       });
-
+ 
       });
     }
-  }
-
-  void delete_follow(var deletekey){
-    ref.child('user').child('$_userid').child('following').child('$deletekey').remove();
-    ref.child('user').child('$deletekey').child('follower').child('$_userid').remove();
-    Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> following()));
   }
 
   @override
@@ -67,7 +60,7 @@ class _followingState extends State<following> {
       backgroundColor: Color.fromRGBO(64, 75, 96, .9),
       appBar: new AppBar(
         centerTitle: true,
-        title: new Text('Following'),
+        title: new Text('Followers'),
       ),
       body: new Container(
         child: allData.length == 0
@@ -94,37 +87,23 @@ class _followingState extends State<following> {
               padding: const EdgeInsets.all(8.0),
               child: new Row(
                 children: <Widget>[
-                  
-                  new Container(
-                    width: 55,
-                    height: 55,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage('$image_url'),
-                        fit: BoxFit.fill,
-                      ),
+                new Container(
+                  width: 55,
+                  height: 55,
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage('$image_url'),
+                      fit: BoxFit.fill,
                     ),
                   ),
-
-                  new Padding(
-                    padding: new EdgeInsets.all(5.0),
-                  ),
-
-                  new Text('$name'),
-                
-                  Expanded(
-                    child: new IconButton(
-                      icon: new Icon(Icons.cancel),
-                      alignment: Alignment.bottomRight,
-                      onPressed: (){
-                        print('cancel is clicked $key');
-                        delete_follow(key);
-                    }
-                  ),
                 ),
+                new Padding(
+                  padding: new EdgeInsets.all(5.0),
+                ),
+                new Text('$name'),
               ],
-              ),
+            ),
             ),
           ),
         ],

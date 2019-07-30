@@ -64,6 +64,7 @@ class _followerState extends State<follower> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(64, 75, 96, .9),
       appBar: new AppBar(
         centerTitle: true,
         title: new Text('Followers'),
@@ -109,13 +110,15 @@ class _followerState extends State<follower> {
                 ),
                 new Text('$name'),
 
-                new IconButton(
-                    icon: new Icon(Icons.cancel),
-                    alignment: Alignment.bottomRight,
-                    onPressed: (){
-                      print('cancel is clicked $key');
-                      delete_follow(key);
-                  }
+                Expanded(
+                  child: new IconButton(
+                      icon: new Icon(Icons.cancel),
+                      alignment: Alignment.bottomRight,
+                      onPressed: (){
+                        print('cancel is clicked $key');
+                        delete_follow(key);
+                    }
+                  ),
                 ),
               ],
             ),

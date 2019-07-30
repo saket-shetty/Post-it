@@ -405,6 +405,7 @@ class _displaymessageState extends State<displaymessage> {
                       onTap: () {
                         submit_comment();
                         display_textbox = false;
+                        Navigator.pop(context,MaterialPageRoute(builder: (context) => displaymessage()));
                         Navigator.push(context,MaterialPageRoute(builder: (context) => displaymessage()));
                         setState(
                           () {

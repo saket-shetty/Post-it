@@ -24,6 +24,7 @@ class _profileState extends State<profile> {
   String _userid;
 
   var status;
+  var _about;
 
   final storage = new FlutterSecureStorage();
 
@@ -31,8 +32,10 @@ class _profileState extends State<profile> {
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
   bool displaystatus = true;
+  bool _displayabout = true;
 
   TextEditingController _status = new TextEditingController();
+  TextEditingController _aboutcontroller = new TextEditingController();
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
@@ -111,6 +114,16 @@ class _profileState extends State<profile> {
         });
       });
 
+      ref.child('user').child('$userid').child('about').once().then((DataSnapshot snap) async{
+        var about = await snap.value;
+        print('about :$about');
+
+        setState(() {
+          _about = about;
+          _aboutcontroller.text = _about;
+        });
+      });
+
     }
 
     setState(() {
@@ -151,249 +164,343 @@ class _profileState extends State<profile> {
 
       body:
       
-       new Stack(
-        children: <Widget>[
-          Positioned(
-            width: device_width,
-            top: 30.0,
-            child: Column(
+       Column(
+         children: <Widget>[
+           Expanded(
+            child: new Stack(
               children: <Widget>[
-                Container(
-                  width: 150.0,
-                  height: 150.0,
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      image: DecorationImage(
-                          image: CachedNetworkImageProvider(_newurl),
-                          fit: BoxFit.cover,),
-                      borderRadius: BorderRadius.all(Radius.circular(75.0)),
-                      boxShadow: [
-                        BoxShadow(blurRadius: 7.0, color: Colors.black)
-                      ])),
-                SizedBox(height: 10.0),
-                Text(
-                  '$_newname',
-                  style: TextStyle(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Montserrat',
-                      color: Colors.blue  
-                    ),
-                ),
-                SizedBox(height: 10.0),
-
-                displaystatus == true ?
-
-                GestureDetector(
-                  onTap: (){
-                    displaystatus = false;
-                    print('status click');
-                    setState(() {
-                      
-                    });
-                  },
-                  child: Text(
-                    '$status',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 17.0,
-                        fontStyle: FontStyle.italic,
-                        fontFamily: 'Montserrat',
-                        color: Colors.white,
-                        
+                Positioned(
+                  width: device_width,
+                  top: 30.0,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: 150.0,
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            image: DecorationImage(
+                                image: CachedNetworkImageProvider(_newurl),
+                                fit: BoxFit.cover,),
+                            borderRadius: BorderRadius.all(Radius.circular(75.0)),
+                            boxShadow: [
+                              BoxShadow(blurRadius: 7.0, color: Colors.black)
+                            ])),
+                      SizedBox(height: 10.0),
+                      Text(
+                        '$_newname',
+                        style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Montserrat',
+                            color: Colors.blue  
+                          ),
                       ),
-                  ),
-                )
+                      SizedBox(height: 10.0),
 
-                : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.only(left:8.0, right: 8.0),
-                      width: MediaQuery.of(context).size.width-50,
-                      child: new TextFormField(
-                        autofocus: true,
-                        style: new TextStyle(
-                          color: Colors.white
-                        ),
-                        cursorColor: Colors.deepPurpleAccent,
-                        controller: _status,
-                        decoration: new InputDecoration(
-                          hintText: 'Status',
-                          contentPadding: EdgeInsets.fromLTRB(20.0,5.0, 20.0, 13.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0),),
-                        )
-                      ),
-                    ),
-                    new IconButton(
-                      icon:Icon(
-                        Icons.send,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onPressed: (){
-                        displaystatus = true;
-                        print('${_status.text}');
-                        setState(() {
-                          ref.child('user').child('$_userid').child('status').set(_status.text);
+                      displaystatus == true ?
+
+                      GestureDetector(
+                        onTap: (){
+                          displaystatus = false;
+                          _displayabout = true;
+                          print('status click');
                           setState(() {
                             
                           });
-                        });
-                      },
-                    ),
-                  ],
-                ),
+                        },
+                        child: Text(
+                          '$status',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 17.0,
+                              fontStyle: FontStyle.italic,
+                              fontFamily: 'Montserrat',
+                              color: Colors.white,
+                              
+                            ),
+                        ),
+                      )
 
-                SizedBox(height: 15.0),
-
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>follower()));
-                      },
-                      child: new Column(
+                      : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          new Text('$followercount',
-                            style: textstyle,
+                          Container(
+                            padding: const EdgeInsets.only(left:8.0, right: 8.0),
+                            width: MediaQuery.of(context).size.width-50,
+                            child: new TextFormField(
+                              autofocus: true,
+                              style: new TextStyle(
+                                color: Colors.white
+                              ),
+                              cursorColor: Colors.deepPurpleAccent,
+                              controller: _status,
+                              decoration: new InputDecoration(
+                                hintText: 'Status',
+                                contentPadding: EdgeInsets.fromLTRB(20.0,5.0, 20.0, 13.0),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0),),
+                              )
+                            ),
                           ),
-                          new Text('Followers',
-                            style: textstyle,
+                          new IconButton(
+                            icon:Icon(
+                              Icons.send,
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            onPressed: (){
+                              displaystatus = true;
+                              print('${_status.text}');
+                              setState(() {
+                                ref.child('user').child('$_userid').child('status').set(_status.text);
+                                setState(() {
+                                  
+                                });
+                              });
+                            },
                           ),
                         ],
                       ),
-                    ),
 
-                    Container(color: Colors.black45, height: 30.0, width: 2,),
+                      SizedBox(height: 15.0),
 
-                    new GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>following()));
-                      },
-                      child: new Column(
-                        mainAxisSize: MainAxisSize.max,
+                      new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          new Text('$followingcount',
-                            style: textstyle,
+                          
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>follower()));
+                            },
+                            child: new Column(
+                              children: <Widget>[
+                                new Text('$followercount',
+                                  style: textstyle,
+                                ),
+                                new Text('Followers',
+                                  style: textstyle,
+                                ),
+                              ],
+                            ),
                           ),
-                          new Text('Following',
-                            style: textstyle,
+
+                          Container(color: Colors.black45, height: 30.0, width: 2,),
+
+                          new GestureDetector(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>following()));
+                            },
+                            child: new Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                new Text('$followingcount',
+                                  style: textstyle,
+                                ),
+                                new Text('Following',
+                                  style: textstyle,
+                                ),
+                              ],
+                            ),
                           ),
+
+                          Container(color: Colors.black45, height: 30.0, width: 2,),
+
+                          new GestureDetector(
+                            onTap: (){
+                              Navigator.push(context,MaterialPageRoute(builder: (context) => userpost()));
+                            },
+                            child: new Column(
+                              children: <Widget>[
+                                new Text('$postcount',
+                                  style: textstyle,
+                                ),
+                                new Text('Post',
+                                  style: textstyle,
+                                )
+                              ],
+                            ),
+                          ),
+
                         ],
                       ),
-                    ),
 
-                    Container(color: Colors.black45, height: 30.0, width: 2,),
+                      SizedBox(height: 15.0),
 
-                    new GestureDetector(
-                      onTap: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => userpost()));
-                      },
-                      child: new Column(
-                        children: <Widget>[
-                          new Text('$postcount',
-                            style: textstyle,
+                      new Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 8.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              new Text('About',
+                                style: new TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0
+                                ),
+                              ),
+
+                              new GestureDetector(
+                                onTap: (){
+                                  _displayabout = false;
+                                  displaystatus = true;
+                                  
+                                  setState((){});
+                                },
+                                child: new Text('$_about',
+                                  style: new TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.white
+                                  ),
+                                ),
+                              ),
+
+                            ],
                           ),
-                          new Text('Post',
-                            style: textstyle,
-                          )
-                        ],
+                        ),
                       ),
-                    ),
 
-                  ],
-                ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.push(context,
+                      //         MaterialPageRoute(builder: (context) => userpost()));
+                      //   },
+                      //   child: Container(
+                      //     height: 50.0,
+                      //     width: 150.0,
+                      //     child: Material(
+                      //       borderRadius: BorderRadius.circular(25.0),
+                      //       shadowColor: Colors.greenAccent,
+                      //       color: Colors.green,
+                      //       elevation: 7.0,
+                      //       child: Center(
+                      //         child: Text(
+                      //           'POSTS',
+                      //           style: TextStyle(
+                      //             color: Colors.white,
+                      //             fontFamily: 'Montserrat',
+                      //             fontWeight: FontWeight.w300,
+                      //             fontSize: 15.0
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(height: 25.0),
+                      // GestureDetector(
+                      //   onTap: (){
+                      //     Navigator.push(context, MaterialPageRoute(builder: (context)=>following()));
+                      //   },
+                      //   child: Container(
+                      //       height: 50.0,
+                      //       width: 150.0,
+                      //       child: Material(
+                      //         borderRadius: BorderRadius.circular(25.0),
+                      //         shadowColor: Colors.cyanAccent,
+                      //         color: Colors.cyan,
+                      //         elevation: 7.0,
+                      //         child: Center(
+                      //           child: Text(
+                      //             'Following',
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontFamily: 'Montserrat',
+                      //               fontWeight: FontWeight.w300,
+                      //               fontSize: 15.0
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       )),
+                      // ),
+                      // SizedBox(height: 25.0),
+                      // GestureDetector(
+                      //   onTap: (){
+                      //     signout();
+                      //     Navigator.push(context, MaterialPageRoute(builder: (context)=>homepage()));
+                      //   },
+                      //   child: Container(
+                      //       height: 50.0,
+                      //       width: 150.0,
+                      //       child: Material(
+                      //         borderRadius: BorderRadius.circular(25.0),
+                      //         shadowColor: Colors.redAccent,
+                      //         color: Colors.red,
+                      //         elevation: 7.0,
+                      //         child: Center(
+                      //           child: Text(
+                      //             'Log out',
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontFamily: 'Montserrat',
+                      //               fontWeight: FontWeight.w300,
+                      //               fontSize: 15.0
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       )),
+                      // ),
 
-                SizedBox(height: 15.0),
 
-                // GestureDetector(
-                //   onTap: () {
-                //     Navigator.push(context,
-                //         MaterialPageRoute(builder: (context) => userpost()));
-                //   },
-                //   child: Container(
-                //     height: 50.0,
-                //     width: 150.0,
-                //     child: Material(
-                //       borderRadius: BorderRadius.circular(25.0),
-                //       shadowColor: Colors.greenAccent,
-                //       color: Colors.green,
-                //       elevation: 7.0,
-                //       child: Center(
-                //         child: Text(
-                //           'POSTS',
-                //           style: TextStyle(
-                //             color: Colors.white,
-                //             fontFamily: 'Montserrat',
-                //             fontWeight: FontWeight.w300,
-                //             fontSize: 15.0
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 25.0),
-                // GestureDetector(
-                //   onTap: (){
-                //     Navigator.push(context, MaterialPageRoute(builder: (context)=>following()));
-                //   },
-                //   child: Container(
-                //       height: 50.0,
-                //       width: 150.0,
-                //       child: Material(
-                //         borderRadius: BorderRadius.circular(25.0),
-                //         shadowColor: Colors.cyanAccent,
-                //         color: Colors.cyan,
-                //         elevation: 7.0,
-                //         child: Center(
-                //           child: Text(
-                //             'Following',
-                //             style: TextStyle(
-                //               color: Colors.white,
-                //               fontFamily: 'Montserrat',
-                //               fontWeight: FontWeight.w300,
-                //               fontSize: 15.0
-                //             ),
-                //           ),
-                //         ),
-                //       )),
-                // ),
-                // SizedBox(height: 25.0),
-                // GestureDetector(
-                //   onTap: (){
-                //     signout();
-                //     Navigator.push(context, MaterialPageRoute(builder: (context)=>homepage()));
-                //   },
-                //   child: Container(
-                //       height: 50.0,
-                //       width: 150.0,
-                //       child: Material(
-                //         borderRadius: BorderRadius.circular(25.0),
-                //         shadowColor: Colors.redAccent,
-                //         color: Colors.red,
-                //         elevation: 7.0,
-                //         child: Center(
-                //           child: Text(
-                //             'Log out',
-                //             style: TextStyle(
-                //               color: Colors.white,
-                //               fontFamily: 'Montserrat',
-                //               fontWeight: FontWeight.w300,
-                //               fontSize: 15.0
-                //             ),
-                //           ),
-                //         ),
-                //       )),
-                // ),
 
+                    ],
+                  ),
+                )
               ],
             ),
-          )
-        ],
-      ),
+           ),
+
+
+            _displayabout == false ? new Row(
+              children: <Widget>[
+
+                Container(
+                  // padding: const EdgeInsets.only(left:8.0, right: 8.0),
+                  width: MediaQuery.of(context).size.width-50,
+                  child: new TextFormField(
+                    validator: (val) => val.length < 1 ? 'Please enter some content' : null,
+                    maxLines: 3,
+                    maxLength: 80,
+                    autofocus: true,
+                    style: new TextStyle(
+                      color: Colors.white
+                    ),
+                    cursorColor: Colors.deepPurpleAccent,
+                    controller: _aboutcontroller,
+                    decoration: new InputDecoration(
+                      hintText: 'About',
+                      hintStyle: new TextStyle(
+                        color: Colors.white,
+                      ),
+                      contentPadding: EdgeInsets.fromLTRB(20.0,5.0, 20.0, 13.0),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),),
+                    )
+                  ),
+                ),
+
+                new IconButton(
+                  icon:Icon(
+                    Icons.send,
+                    color: Colors.deepPurpleAccent,
+                    size: 25.0,
+                  ),
+                  
+                  onPressed: (){
+                    _displayabout = true;
+                    print('${_aboutcontroller.text}');
+                    setState(() {
+                      ref.child('user').child('$_userid').child('about').set(_aboutcontroller.text);
+                      setState(() {
+                        
+                      });
+                    });
+                  },
+                ),
+              ],
+              
+            ) : new Container(),
+         ],
+       ),
     );
   }
 }
