@@ -12,6 +12,7 @@ dependencies:
   sqflite: ^1.1.5
   cached_network_image: ^0.8.0
   flutter_launcher_icons: ^0.7.2
+  line_icons: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -25,7 +26,6 @@ dev_dependencies:
   flare_flutter: 
   transparent_image:
   flip_card: ^0.2.1
-  firebase_storage: ^1.0.4
   image_picker:
   time_machine: ^0.9.8
   flutter_twitter_login: ^1.1.0

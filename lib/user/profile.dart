@@ -147,7 +147,7 @@ class _profileState extends State<profile> {
     var topheight = MediaQuery.of(context).padding.top;
     var device_width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Color.fromRGBO(64, 75, 96, .9),
+      backgroundColor: Color(0xFF44473E),
 
       appBar: new AppBar(
         centerTitle: true,
@@ -208,7 +208,7 @@ class _profileState extends State<profile> {
                             fontSize: 30.0,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Montserrat',
-                            color: Colors.blue  
+                            color: Color(0xFFFD9D5C)  
                           ),
                       ),
                       SizedBox(height: 10.0),

@@ -7,6 +7,7 @@ import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebaseapp/splashscreen/splashscreen.dart';
+import 'package:line_icons/line_icons.dart';
 
 void main() => runApp(
       new MaterialApp(
@@ -43,7 +44,7 @@ class _homepageState extends State<homepage> {
   
   //Google login
   //login proved us with username, imageurl, token and user id
-  Future<FirebaseUser> _signIn() async {
+  Future<FirebaseUser> _GooglesignIn() async {
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     GoogleSignInAuthentication gSA = await googleSignInAccount.authentication;
 
@@ -86,7 +87,7 @@ class _homepageState extends State<homepage> {
   // Remember to remove secret key and api key before uploading to github
   // Twitter doesnt provide the user image url so i am using a default image which will be same for every user.
 
-  void _login() async {
+  void _Twitterlogin() async {
     final TwitterLoginResult result = await twitterLogin.authorize();
     var session = result.session;
     final AuthCredential credential = TwitterAuthProvider.getCredential(
@@ -162,6 +163,7 @@ class _homepageState extends State<homepage> {
     WillPopScope(
       onWillPop: () async=> false,
       child: Scaffold(
+        backgroundColor: Colors.red[100],
         body: Center(
           child: Container(
             child: Padding(
@@ -176,11 +178,11 @@ class _homepageState extends State<homepage> {
                     image: AssetImage('asset/mainlogo.png'),
                   ),
                   new Container(
-                    width: 250,
+                    width: 180,
                     height: 50.0,
                     child: new InkWell(
                       onTap: () {
-                        _signIn();
+                        _GooglesignIn();
                       },
                       child: Material(
                         borderRadius: BorderRadius.circular(25.0),
@@ -188,27 +190,43 @@ class _homepageState extends State<homepage> {
                         shadowColor: Colors.redAccent.withOpacity(0.8),
                         elevation: 7.0,
                         child: Center(
-                          child: new Text(
-                            'Login in with Google',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w300,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Icon(
+                                LineIcons.google,
+                                size: 25.0,
+                                color: Colors.white,
+                              ),
+                              new VerticalDivider(
+                                color: Colors.black,
+                                width: 22.0,
+                              ),
+                              new Text(
+                                'Google',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
+
                   new Padding(
                     padding: new EdgeInsets.all(8.0),
                   ),
+
                   new Container(
-                    width: 250,
+                    width: 180,
                     height: 50.0,
                     child: new InkWell(
                       onTap: () {
-                        _login();
+                        _Twitterlogin();
                       },
                       child: Material(
                         borderRadius: BorderRadius.circular(25.0),
@@ -216,13 +234,27 @@ class _homepageState extends State<homepage> {
                         shadowColor: Colors.lightBlue.withOpacity(0.8),
                         elevation: 7.0,
                         child: Center(
-                          child: new Text(
-                            'Login in with Twitter',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w300,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Icon(
+                                LineIcons.twitter,
+                                size: 25.0,
+                                color: Colors.white,
+                              ),
+                              new VerticalDivider(
+                                color: Colors.black,
+                                width: 22.0,
+                              ),
+                              new Text(
+                                'Twitter',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

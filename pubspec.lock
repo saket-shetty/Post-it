@@ -99,13 +99,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
-  firebase_storage:
-    dependency: "direct dev"
-    description:
-      name: firebase_storage
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   fixnum:
     dependency: transitive
     description:
@@ -214,6 +207,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.7"
+  line_icons:
+    dependency: "direct main"
+    description:
+      name: line_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   logging:
     dependency: transitive
     description:

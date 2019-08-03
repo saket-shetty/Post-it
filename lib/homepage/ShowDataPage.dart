@@ -13,6 +13,7 @@ import 'package:firebaseapp/function/Setting.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:line_icons/line_icons.dart';
 
 
 class ShowDataPage extends StatefulWidget {
@@ -53,11 +54,15 @@ class _ShowDataPageState extends State<ShowDataPage> {
   List countoflikes = [];
   int count = 0, likecount = 0;
 
+  List likecolorlist = [];
+
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
   int reportcount=0;
 
   var report_status;
+
+  Color _likecolor;
 
 
   Future get_user_detail() async{
@@ -91,16 +96,23 @@ class _ShowDataPageState extends State<ShowDataPage> {
   void initState() {
 
     get_user_detail();
+    get_all_data();
     reportstatus();
 
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
     //snap.value will give the json format value and snap.value.key will give all the child/key the json contains.
 
-    print('init is calling');
 
 
-    ref.child('node-name').limitToLast(20).once().then((DataSnapshot snap) {
+    for(var x in likecolorlist){
+      print(x);
+    }
+  }
+
+  Future get_all_data() async{
+    await _userid;
+      ref.child('node-name').limitToLast(20).once().then((DataSnapshot snap) {
       var keys = snap.value.keys;
       var data = snap.value;
 
@@ -137,12 +149,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
         //counting the number of likes the post got.
         //so that the user will get to know the amount of likes that his/her post got
 
-        ref
-            .child('node-name')
-            .child('$newlist')
-            .child('likes')
-            .once()
-            .then((DataSnapshot datasnap) {
+        ref.child('node-name').child('$newlist').child('likes').once().then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
           for (var x in key) {
             if (x != 'no-likes') {
@@ -156,6 +163,23 @@ class _ShowDataPageState extends State<ShowDataPage> {
         });
 
         timestamplist.add(newlist);
+
+        ref.child('node-name').child('$newlist').child('likes').child('$_userid').once().then((DataSnapshot snap) async{
+          print('this is user id $_userid');
+          await _userid;
+          var snapdata = snap.value;
+          if(snapdata != null){
+            _likecolor = Colors.red;
+            likecolorlist.add(0xFFFF0000);
+          }
+          else{
+            _likecolor = Colors.white;
+            likecolorlist.add(0xFFFFFFFF);
+          }
+          setState(() {
+            
+          });
+        });
 
         myData d = new myData(
             data[newlist]['name'],
@@ -196,18 +220,13 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
 
   Future reportstatus() async {
-      print('This is reportstatus funct');
       ref.child('user').child('550107170').child('Report').once().then((DataSnapshot snap) async {
 
         var data = await snap.value.keys;
 
-        print(data);
-
         for(var key in data){
           reportcount++;
-          print('key :$key');
         }
-        print('value of data :$data');
         setState(() async {
           if(reportcount>=10){
             report_status = 'true';
@@ -235,83 +254,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
           ),
         ),
 
-        // drawer: new Drawer(
-        //   child: new ListView(
-        //     children: <Widget>[
-        //       new UserAccountsDrawerHeader(
-        //         accountName: new Text(
-        //           _newname,
-        //           style: new TextStyle(fontSize: 18.0),
-        //         ),
-        //         accountEmail: new Text(_newname),
-        //         currentAccountPicture: new Container(
-        //           decoration: BoxDecoration(
-        //             color: Colors.red,
-        //             image: DecorationImage(
-        //                 image: CachedNetworkImageProvider(_userimage),
-        //                 fit: BoxFit.cover),
-        //             borderRadius: BorderRadius.all(Radius.circular(75.0)),
-        //             boxShadow: [
-        //               BoxShadow(blurRadius: 7.0, color: Colors.black)
-        //             ],
-        //           ),
-        //         ),
-        //       ),
-        //       new ListTile(
-        //         leading: new Icon(Icons.person),
-        //         title: new Text(
-        //           'Profile',
-        //           style: new TextStyle(
-        //               fontSize: 18.0, fontWeight: FontWeight.bold),
-        //         ),
-        //         onTap: () {
-        //           Navigator.push(context,
-        //               MaterialPageRoute(builder: (context) => profile()));
-        //         },
-        //       ),
-        //       new Divider(
-        //         height: 0.0,
-        //         color: Colors.black,
-        //       ),
-        //       new ListTile(
-        //         leading: new Icon(Icons.accessibility),
-        //         title: new Text(
-        //           'About',
-        //           style: new TextStyle(
-        //               fontSize: 18.0, fontWeight: FontWeight.bold),
-        //         ),
-        //         onTap: () {
-        //           Navigator.push(context,
-        //               MaterialPageRoute(builder: (context) => about()));
-        //         },
-        //       ),
-        //       new Divider(
-        //         height: 0.0,
-        //         color: Colors.black,
-        //       ),
-        //       new ListTile(
-        //         leading: new Icon(Icons.settings),
-        //         title: new Text(
-        //           'Setting',
-        //           style: new TextStyle(
-        //               fontSize: 18.0, fontWeight: FontWeight.bold),
-        //         ),
-        //         onTap: () {
-        //           Navigator.push(context,
-        //               MaterialPageRoute(builder: (context) => setting()));
-        //         },
-        //       ),
-        //       new Divider(
-        //         height: 0.0,
-        //         color: Colors.black,
-        //       ),
-        //     ],
-        //   ),
-        // ),
-
         bottomNavigationBar: BottomNavigationBar(
-        // backgroundColor: Color.fromRGBO(64, 75, 96, .9),
-
           currentIndex: _onTapIndex,
           onTap: (int index) {
             setState(() {
@@ -372,6 +315,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
                         countofcomment[index],
                         allData[index].userid,
                         countoflikes[index],
+                        likecolorlist[index]
                       );
                     },
                   ),
@@ -383,7 +327,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
   }
 
   Widget UI(String name, String message, String datetime, String image,
-      String timestamp, int cmntcount, String userid, int likecount) {
+      String timestamp, int cmntcount, String userid, int likecount, int likecolor) {
+
     return new InkWell(
       onTap: () {
         sharemessage = message;
@@ -434,9 +379,9 @@ class _ShowDataPageState extends State<ShowDataPage> {
                                   _likesnackbar();
                                   },
                                 child: new Icon(
-                                  Icons.thumb_up,
+                                  LineIcons.heart,
                                   size: 20,
-                                  color: Colors.white,
+                                  color: Color(likecolor),
                                 ),
                               ),
                               new Text(
