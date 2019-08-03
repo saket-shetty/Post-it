@@ -166,12 +166,27 @@ class _profileState extends State<profile> {
       
        Column(
          children: <Widget>[
+          // new Padding(padding: new EdgeInsets.all(5),),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FlatButton(
+              child: new Text('Log Out',
+                style: new TextStyle(
+                  color: Colors.white
+                ),
+              ),
+              onPressed: (){
+                signout();
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>homepage()));
+              },
+            ),
+          ),
+          // new Padding(padding: new EdgeInsets.all(5),),
            Expanded(
             child: new Stack(
               children: <Widget>[
                 Positioned(
                   width: device_width,
-                  top: 30.0,
                   child: Column(
                     children: <Widget>[
                       Container(

@@ -217,7 +217,7 @@ class _displaymessageState extends State<displaymessage> {
                   child: new Center(
                     child: new Text(
                       '$_newmessage',
-                      maxLines: 7,
+                      maxLines: 10,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,

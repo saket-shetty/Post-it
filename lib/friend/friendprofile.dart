@@ -32,6 +32,7 @@ class _friendprofileState extends State<friendprofile> {
 
   var status;
   var _about;
+  var _followertext = 'FOLLOW';
 
 
 
@@ -42,8 +43,8 @@ class _friendprofileState extends State<friendprofile> {
   @override
   void initState() {
     // TODO: implement initState
-    friendid();
     get_user_id();
+    friendid();
     super.initState();
   }
 
@@ -109,6 +110,8 @@ class _friendprofileState extends State<friendprofile> {
         });
       });
 
+      //.........................USER ABOUT..........................................
+
       ref.child('user').child('$friend_id').child('about').once().then((DataSnapshot snap) async{
         var about = await snap.value;
         print('about :$about');
@@ -116,6 +119,16 @@ class _friendprofileState extends State<friendprofile> {
         setState(() {
           _about = about;
         });
+      });
+
+      ref.child('user').child('$friend_id').child('follower').child('$_userid').once().then((DataSnapshot snap) async{
+        var data = await snap.value;
+        print('data exst :$data'); 
+        if(data != null){
+          setState((){
+            _followertext = 'FOLLOWING';
+          });
+        }
       });
 
     }
@@ -301,13 +314,13 @@ class _friendprofileState extends State<friendprofile> {
                           _snackbar();
                         },
                         child: Material(
-                          borderRadius: BorderRadius.circular(25.0),
+                          borderRadius: BorderRadius.circular(10.0),
                           color: Colors.redAccent,
                           shadowColor: Colors.redAccent.withOpacity(0.8),
                           elevation: 7.0,
                           child: Center(
                             child: new Text(
-                              'FOLLOW',
+                              '$_followertext',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18.0,

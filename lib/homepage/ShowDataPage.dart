@@ -190,6 +190,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
     await storage.write(key: 'user-id', value: '$userid');
     await storage.write(key: 'user-image', value: '$userimage');
     await storage.write(key: 'user-name', value: '$username');
+
+    setState((){});
   }
 
 
@@ -232,79 +234,80 @@ class _ShowDataPageState extends State<ShowDataPage> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
           ),
         ),
-        drawer: new Drawer(
-          child: new ListView(
-            children: <Widget>[
-              new UserAccountsDrawerHeader(
-                accountName: new Text(
-                  _newname,
-                  style: new TextStyle(fontSize: 18.0),
-                ),
-                accountEmail: new Text(_newname),
-                currentAccountPicture: new Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    image: DecorationImage(
-                        image: CachedNetworkImageProvider(_userimage),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.all(Radius.circular(75.0)),
-                    boxShadow: [
-                      BoxShadow(blurRadius: 7.0, color: Colors.black)
-                    ],
-                  ),
-                ),
-              ),
-              new ListTile(
-                leading: new Icon(Icons.person),
-                title: new Text(
-                  'Profile',
-                  style: new TextStyle(
-                      fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => profile()));
-                },
-              ),
-              new Divider(
-                height: 0.0,
-                color: Colors.black,
-              ),
-              new ListTile(
-                leading: new Icon(Icons.accessibility),
-                title: new Text(
-                  'About',
-                  style: new TextStyle(
-                      fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => about()));
-                },
-              ),
-              new Divider(
-                height: 0.0,
-                color: Colors.black,
-              ),
-              new ListTile(
-                leading: new Icon(Icons.settings),
-                title: new Text(
-                  'Setting',
-                  style: new TextStyle(
-                      fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => setting()));
-                },
-              ),
-              new Divider(
-                height: 0.0,
-                color: Colors.black,
-              ),
-            ],
-          ),
-        ),
+
+        // drawer: new Drawer(
+        //   child: new ListView(
+        //     children: <Widget>[
+        //       new UserAccountsDrawerHeader(
+        //         accountName: new Text(
+        //           _newname,
+        //           style: new TextStyle(fontSize: 18.0),
+        //         ),
+        //         accountEmail: new Text(_newname),
+        //         currentAccountPicture: new Container(
+        //           decoration: BoxDecoration(
+        //             color: Colors.red,
+        //             image: DecorationImage(
+        //                 image: CachedNetworkImageProvider(_userimage),
+        //                 fit: BoxFit.cover),
+        //             borderRadius: BorderRadius.all(Radius.circular(75.0)),
+        //             boxShadow: [
+        //               BoxShadow(blurRadius: 7.0, color: Colors.black)
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //       new ListTile(
+        //         leading: new Icon(Icons.person),
+        //         title: new Text(
+        //           'Profile',
+        //           style: new TextStyle(
+        //               fontSize: 18.0, fontWeight: FontWeight.bold),
+        //         ),
+        //         onTap: () {
+        //           Navigator.push(context,
+        //               MaterialPageRoute(builder: (context) => profile()));
+        //         },
+        //       ),
+        //       new Divider(
+        //         height: 0.0,
+        //         color: Colors.black,
+        //       ),
+        //       new ListTile(
+        //         leading: new Icon(Icons.accessibility),
+        //         title: new Text(
+        //           'About',
+        //           style: new TextStyle(
+        //               fontSize: 18.0, fontWeight: FontWeight.bold),
+        //         ),
+        //         onTap: () {
+        //           Navigator.push(context,
+        //               MaterialPageRoute(builder: (context) => about()));
+        //         },
+        //       ),
+        //       new Divider(
+        //         height: 0.0,
+        //         color: Colors.black,
+        //       ),
+        //       new ListTile(
+        //         leading: new Icon(Icons.settings),
+        //         title: new Text(
+        //           'Setting',
+        //           style: new TextStyle(
+        //               fontSize: 18.0, fontWeight: FontWeight.bold),
+        //         ),
+        //         onTap: () {
+        //           Navigator.push(context,
+        //               MaterialPageRoute(builder: (context) => setting()));
+        //         },
+        //       ),
+        //       new Divider(
+        //         height: 0.0,
+        //         color: Colors.black,
+        //       ),
+        //     ],
+        //   ),
+        // ),
 
         bottomNavigationBar: BottomNavigationBar(
         // backgroundColor: Color.fromRGBO(64, 75, 96, .9),
