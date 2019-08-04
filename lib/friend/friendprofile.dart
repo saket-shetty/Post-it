@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebaseapp/friend/friend_follower.dart';
 import 'package:firebaseapp/friend/friend_following.dart';
+import 'package:firebaseapp/friend/message_friend.dart';
 import 'package:flutter/material.dart';
 import 'package:firebaseapp/user/profile.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -302,6 +303,7 @@ class _friendprofileState extends State<friendprofile> {
                 new Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+
                     new Container(
                       width: MediaQuery.of(context).size.width/2-50,
                       height: 40.0,
@@ -331,6 +333,35 @@ class _friendprofileState extends State<friendprofile> {
                         ),
                       ),
                     ),
+
+                    new Padding(padding: new EdgeInsets.all(10.0),),
+
+                    new Container(
+                      width: MediaQuery.of(context).size.width/2-50,
+                      height: 40.0,
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend()));
+                        },
+                        child: Material(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.redAccent,
+                          shadowColor: Colors.redAccent.withOpacity(0.8),
+                          elevation: 7.0,
+                          child: Center(
+                            child: new Text(
+                              'MESSAGE',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+
                   ],
                 ),
 
