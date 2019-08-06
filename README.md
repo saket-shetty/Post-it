@@ -27,13 +27,12 @@ Any Query contact: shettysaket05@gmail.com
      <td><img src="material/main.jpeg" width="180" height="300"></td>
      <td><img src="material/message.jpeg" width="180" height="300"></td>
   </tr>
+  <tr>
+     <td><img src="material/profile.jpeg" width="180" height="300"></td>
+     <td><img src="material/chat.jpeg" width="180" height="300"></td>
+   </tr>
 
 </table>
-
-<img src="material/profile.jpeg" width="180" height="300">
-<img src="material/chat.jpeg" width="180" height="300">
-
-
 
 
 # firebaseapp
