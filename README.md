@@ -21,12 +21,21 @@ In this new update instead of default icon and splash created a new icon and spl
 
 Any Query contact: shettysaket05@gmail.com
 
+<table>
+  <tr>
+     <img src="material/login.jpeg" width="150" height="250">
+     <img src="material/main.jpeg" width="150" height="250">
+     <img src="material/message.jpeg" width="150" height="250">
+  </tr>
+
+</table>
+
 
 <img src="material/login.jpeg" width="150" height="250">
 <img src="material/main.jpeg" width="150" height="250">
 <img src="material/message.jpeg" width="150" height="250">
 <img src="material/profile.jpeg" width="150" height="250">
-<img src="material/chat.jpeg" width="150" height="250">
+<img src="material/chat.jpeg" width="200" height="300">
 
 
 
