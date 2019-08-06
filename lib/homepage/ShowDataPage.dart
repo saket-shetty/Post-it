@@ -1,3 +1,4 @@
+import 'package:firebaseapp/friend/message_friend.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myData.dart';
@@ -8,8 +9,6 @@ import 'package:firebaseapp/user/profile.dart';
 import 'dart:math' show Random;
 import 'package:firebaseapp/homepage/display_message.dart';
 import 'package:firebaseapp/friend/friendprofile.dart';
-import 'package:firebaseapp/function/about.dart';
-import 'package:firebaseapp/function/Setting.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -198,6 +197,33 @@ class _ShowDataPageState extends State<ShowDataPage> {
       content: new Text('Liked'),
       duration: new Duration(milliseconds: 2000),
       backgroundColor: Colors.green,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  _same_user() {
+    final snackbar = new SnackBar(
+      content: new Text('You cannot message yourself'),
+      duration: new Duration(milliseconds: 2000),
+      backgroundColor: Colors.green,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  _report_yourself() {
+    final snackbar = new SnackBar(
+      content: new Text('You cannot report yourself'),
+      duration: new Duration(milliseconds: 2000),
+      backgroundColor: Colors.green,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  _report_user() {
+    final snackbar = new SnackBar(
+      content: new Text('Reported'),
+      duration: new Duration(milliseconds: 2000),
+      backgroundColor: Colors.red,
     );
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
@@ -435,16 +461,36 @@ class _ShowDataPageState extends State<ShowDataPage> {
                     color: Colors.redAccent,
                     icon: Icons.report,
                     onTap: (){
-                      ref.child('user').child('$userid').child('Report').child('$_userid').set('1');
+                      if(userid != _userid){
+                        ref.child('user').child('$userid').child('Report').child('$_userid').set('1');
+                        _report_user();
+                      }
+                      else if(userid == _userid){
+                        _report_yourself();
+                      }
                     },
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
                   child: new IconSlideAction(
-                    icon: Icons.more,
-                    caption: 'More',
+                    icon: Icons.message,
+                    caption: 'Message',
                     color: Colors.deepOrangeAccent,
+                    onTap: () async{
+
+                      if(userid != _userid){
+                        await storage.write(key: 'friend-id', value: '$userid');
+                        await storage.write(key: 'friend-name', value: '$name');
+                        await storage.write(key: 'friend-image', value: '$image');
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend()));
+                      }
+                      else if(userid == _userid){
+                        _same_user();
+                      }
+
+                    },
                   ),
                 )
               ],
@@ -481,7 +527,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                         fit: BoxFit.fill,
-                        image: new NetworkImage('$image'),
+                        image: new CachedNetworkImageProvider('$image'),
                       ),
                     ),
                   ),
@@ -494,7 +540,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
                   children: <Widget>[
                     new Text(
                       '$name',
-//                    style: TextStyle(color: Colors.white),
                     ),
                     new Text(
                       '$datetime',

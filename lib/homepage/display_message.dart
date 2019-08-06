@@ -381,9 +381,11 @@ class _displaymessageState extends State<displaymessage> {
                                 autofocus: true,
                                 decoration: new InputDecoration(
                                   hintText: 'Write a Comment',
-                                  
                                   contentPadding: EdgeInsets.fromLTRB(20.0,5.0, 20.0, 13.0),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+                                  hintStyle: new TextStyle(
+                                    color: Colors.white,
+                                  ),
                                 ),
                                 
                                 validator: (val) => val.length < 1

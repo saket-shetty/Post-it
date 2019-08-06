@@ -141,6 +141,11 @@ class _message_friendState extends State<message_friend> {
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('id').set('$user_id');
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('message').set('$_message');
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('time').set('$currentime');
+
+
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('id').set('$user_id');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('message').set('$_message');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('time').set('$currentime');
   }
 
 
