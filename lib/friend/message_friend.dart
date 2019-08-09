@@ -31,6 +31,8 @@ class _message_friendState extends State<message_friend> {
 
   var _message;
 
+  int _childaddedcount = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -75,7 +77,7 @@ class _message_friendState extends State<message_friend> {
       listofkeys.reversed;
 
       for(var x in listofkeys){
-        message_data msgdata = new message_data(newdata[x]['id'], newdata[x]['message'], newdata[x]['time']);
+        message_data msgdata = new message_data(newdata[x]['id'], newdata[x]['time'], newdata['name'], newdata['image'], newdata[x]['message']);
         allData.add(msgdata);
         setState(() {
           
@@ -92,20 +94,14 @@ class _message_friendState extends State<message_friend> {
     ref.child('user').child('$user_id').child('message').child('$friend_id').onChildChanged.listen((snap){
       var key = snap.snapshot.key;
       var value = snap.snapshot.value;
-      print('Child added : ${key}');
+      // print('Child added : ${key}');
       print('Child added : ${value}');
 
-      if(value['time'] != null){
-        message_data data = new message_data(value['id'], value['message'], value['time']);
+      if(value['time'] != null && value['name'] != null && value['image']!= null && value['message']!= null && value['friend-name'] != null && value['friend-image']!= null){
+        message_data data = new message_data(value['id'], value['time'], value['name'], value['image'], value['message']);
         allData.add(data);
       }
-
-      setState(() {
-        
-      });
-    });
-    setState(() {
-      
+      setState(() {});
     });
   }
 
@@ -138,14 +134,22 @@ class _message_friendState extends State<message_friend> {
 
     var currentime = hour.toString()+":"+time.minute.toString()+' '+state;
 
-    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('id').set('$user_id');
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('message').set('$_message');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('id').set('$user_id');
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('time').set('$currentime');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('image').set('$user_profile');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('name').set('$user_name');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('friend-image').set('$friend_profile');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('friend-name').set('$friend_name');
 
-
-    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('id').set('$user_id');
     ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('message').set('$_message');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('id').set('$user_id');
     ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('time').set('$currentime');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('image').set('$friend_profile');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('name').set('$friend_name');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('friend-image').set('$user_profile');
+    ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('friend-name').set('$user_name');
+
   }
 
 
@@ -175,7 +179,9 @@ class _message_friendState extends State<message_friend> {
                 return MessageUI(
                   allData[index].message_user_id,
                   allData[index].messagedata,
-                  allData[index].time
+                  allData[index].time,
+                  allData[index].name,
+                  allData[index].image
                 );
               },
             ),
@@ -256,7 +262,7 @@ class _message_friendState extends State<message_friend> {
     );
   }
 
-  Widget MessageUI(var id, var msg, var time){
+  Widget MessageUI(var id, var msg, var time, var name, var image){
     if(id == user_id){
       return new Align(
         alignment: Alignment.centerRight,
@@ -268,18 +274,26 @@ class _message_friendState extends State<message_friend> {
               child: new Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  new Text('$msg',
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white
-                    )
+                  Flexible(
+                    child: Column(
+                      children: <Widget>[
+                        new Text('$msg',
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white
+                          ),
+                          maxLines: 4,
+                        ),
+                      ],
+                    ),
                   ),
                   new Padding(padding: new EdgeInsets.all(5),),
                   new Text('$time',
                     style: new TextStyle(
                       fontSize: 12,
                     ),
+                    maxLines: 4,
                   ),
                 ],
               ),
@@ -307,11 +321,18 @@ class _message_friendState extends State<message_friend> {
                     ),
                   ),
                   new Padding(padding: new EdgeInsets.all(5),),
-                  new Text('$msg',
-                    style: new TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black,
+                  Flexible(
+                    child: Column(
+                      children: <Widget>[
+                        new Text('$msg',
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                          maxLines: 4,
+                        ),
+                      ],
                     ),
                   ),
 
@@ -329,6 +350,8 @@ class message_data{
   var message_user_id;
   var messagedata;
   var time;
+  var name;
+  var image;
 
-  message_data(this.message_user_id, this.messagedata, this.time);
+  message_data(this.message_user_id, this.time, this.name, this.image, this.messagedata);
 }

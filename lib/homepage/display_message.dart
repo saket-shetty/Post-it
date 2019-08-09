@@ -1,3 +1,5 @@
+import 'package:firebaseapp/friend/friendprofile.dart';
+import 'package:firebaseapp/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myComment.dart';
@@ -15,6 +17,7 @@ class _displaymessageState extends State<displaymessage> {
   bool _display_comment = false;
 
   final store = new FlutterSecureStorage();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<myComment> allData = [];
 
@@ -25,6 +28,7 @@ class _displaymessageState extends State<displaymessage> {
   var _sendername = '';
   var _senderimageurl = '';
   var _message;
+  var _userid;
 
   final formKey = new GlobalKey<FormState>();
 
@@ -33,6 +37,15 @@ class _displaymessageState extends State<displaymessage> {
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
+  _snackbar() {
+    final snackbar = new SnackBar(
+      content: new Text('Sorry! cannot process old comments'),
+      duration: new Duration(milliseconds: 2000),
+      backgroundColor: Colors.green,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
   Future post_data() async{
     String newname = await store.read(key: 'message-name');
     String newurl = await store.read(key: 'message-image');
@@ -40,6 +53,7 @@ class _displaymessageState extends State<displaymessage> {
     String timestamp = await store.read(key: 'timestamp');
     String sendername = await store.read(key: 'user-name');
     String senderimage = await store.read(key: 'user-image');
+    String userid = await store.read(key: 'user-id');
 
     setState((){
       _newname = newname;
@@ -48,6 +62,7 @@ class _displaymessageState extends State<displaymessage> {
       _newmessagetimestamp = timestamp;
       _sendername = sendername;
       _senderimageurl = senderimage;
+      _userid = userid;
     });
 
     print('name $_newname');
@@ -56,35 +71,28 @@ class _displaymessageState extends State<displaymessage> {
     print('name $_newmessagetimestamp');
     print('name $_sendername');
     print('name $_senderimageurl');
+    setState(() {
+      
+    });
   }
-
-  Future delete_data() async{
-    await store.delete(key: 'message-name');
-    await store.delete(key: 'message-image');
-    await store.delete(key: 'message');
-    await store.delete(key: 'timestamp');
-  }
-
 
 
   @override
   void initState() {
     // TODO: implement initState
-
     post_data();
-
-    setState(() {});
-
     _comments();
+    setState(() {});
     _likes();
 
     super.initState();
   }
 
-  Future<String> _comments() async {
-    await new Future.delayed(new Duration(milliseconds: 100), () {
-      ref.child('node-name').child('$_newmessagetimestamp').child('comments').once().then(
-        (DataSnapshot snap) {
+  Future _comments() async {
+    var _newtimestamp = await store.read(key: 'timestamp');
+    await new Future.delayed(Duration(milliseconds: 150),() async{
+          print('time stamp :$_newmessagetimestamp');
+      await ref.child('node-name').child('$_newtimestamp').child('comments').once().then((DataSnapshot snap) {
           var keys = snap.value.keys;
           var data = snap.value;
 
@@ -97,30 +105,26 @@ class _displaymessageState extends State<displaymessage> {
               print('its found :$key');
             }
           }
-
+          
           for (var newlist in commentlist) {
             myComment d = new myComment(
               data[newlist]['name'],
               data[newlist]['comment'],
               data[newlist]['image_url'],
+              data[newlist]['id'],
+              data[newlist]['time']
             );
             allData.add(d);
           }
-          setState(() {});
         },
       );
+      setState((){});
     });
   }
 
-  Future<String> _likes() async {
+  Future _likes() async {
     await new Future.delayed(new Duration(milliseconds: 100), () {
-      ref
-          .child('node-name')
-          .child('$_newmessagetimestamp')
-          .child('likes')
-          .once()
-          .then(
-        (DataSnapshot snap) {
+      ref.child('node-name').child('$_newmessagetimestamp').child('likes').once().then((DataSnapshot snap) {
           var keys = snap.value.keys;
           var data = snap.value;
 
@@ -138,8 +142,6 @@ class _displaymessageState extends State<displaymessage> {
     });
   }
 
-//  var timestamp = new DateTime.now().millisecondsSinceEpoch;
-
   void submit_comment() {
     final form = formKey.currentState;
 
@@ -154,11 +156,31 @@ class _displaymessageState extends State<displaymessage> {
     var now = Instant.now();
     var timestamp = now.toString('yyyyMMddHHmmss');
 
+    var time = DateTime.now();
+    int hour;
+    var state;
+
+    if(time.hour > 12){
+      hour = time.hour - 12;
+      state = 'pm';
+      setState(() {});
+    }
+    else{
+      hour = time.hour;
+      state = 'am';
+      setState(() {});
+    }
+
+    var currentime = hour.toString()+":"+time.minute.toString()+' '+state;
+
+
     print('this is comments timestamp :$timestamp');
 
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('comment').set('$_message');
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('image_url').set('$_senderimageurl');
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('name').set('$_sendername');
+    ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('id').set('$_userid');
+    ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('time').set('$currentime');
   }
 
   @override
@@ -166,6 +188,7 @@ class _displaymessageState extends State<displaymessage> {
     var size = MediaQuery.of(context).size.width;
     var toppadding = MediaQuery.of(context).padding.top;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Color.fromRGBO(64, 75, 96, .9),
       body: new Column(
         children: <Widget>[
@@ -321,6 +344,8 @@ class _displaymessageState extends State<displaymessage> {
                         allData[index].name,
                         allData[index].image_url,
                         allData[index].comment,
+                        allData[index].id,
+                        allData[index].time
                       );
                     },
                   ),
@@ -441,63 +466,95 @@ class _displaymessageState extends State<displaymessage> {
     );
   }
 
-  Widget commentUI(String cmnt_name, String cmnt_image, String cmnt) {
-    return Column(
-      children: <Widget>[
-        new Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            new Padding(
-              padding: EdgeInsets.only(left: 10.0),
-            ),
-            new Container(
-              width: 40,
-              height: 40,
-              decoration: new BoxDecoration(
-                shape: BoxShape.circle,
-                image: new DecorationImage(
-                  fit: BoxFit.fill,
-                  image: new NetworkImage('$cmnt_image'),
+  Widget commentUI(String cmnt_name, String cmnt_image, String cmnt, var id, var time) {
+    return GestureDetector(
+      onTap: ()async{
+
+        if(id == null){
+          _snackbar();
+        }
+        else if(id != _userid){
+          await store.write(key:'friend-id', value: '$id');
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
+        }
+        else if(id == _userid){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>profile()));
+        }
+
+      },
+      child: Column(
+        children: <Widget>[
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              new Padding(
+                padding: EdgeInsets.only(left: 10.0),
+              ),
+              new Container(
+                width: 40,
+                height: 40,
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: new DecorationImage(
+                    fit: BoxFit.fill,
+                    image: new NetworkImage('$cmnt_image'),
+                  ),
                 ),
               ),
-            ),
-            new Padding(
-              padding: new EdgeInsets.only(left: 15.0),
-            ),
-            Expanded(
-              child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  new Text(
-                    '$cmnt',
-                    maxLines: 2,
-                    style: new TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 15.0,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.only(bottom: 3.0),
-                  ),
-                  new Text(
-                    '$cmnt_name',
-                    style: new TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  )
-                ],
+              new Padding(
+                padding: new EdgeInsets.only(left: 15.0),
               ),
-            ),
-          ],
-        ),
-        new Divider(
-          color: Colors.black,
-        )
-      ],
+              Expanded(
+                child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text(
+                      '$cmnt',
+                      maxLines: 2,
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 15.0,
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    new Padding(
+                      padding: new EdgeInsets.only(bottom: 3.0),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        new Text(
+                          '$cmnt_name',
+                          style: new TextStyle(
+                            fontWeight: FontWeight.w300,
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: new Text('$time',
+                              style: new TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+          new Divider(
+            color: Colors.black,
+          )
+        ],
+      ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:firebaseapp/friend/friendprofile.dart';
+import 'package:firebaseapp/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myFollowing.dart';
@@ -18,10 +20,13 @@ class _friendfollowingState extends State<friendfollowing> {
 
   final storage = new FlutterSecureStorage();
 
+  var _realuser;
+
   @override
   void initState() {
     // TODO: implement initState
     get_user_id();
+    get_real_user_data();
   }
 
   Future get_user_id() async{
@@ -52,6 +57,13 @@ class _friendfollowingState extends State<friendfollowing> {
 
       });
     }
+  }
+
+  Future get_real_user_data()async{
+    var real_user = await storage.read(key: 'user-id');
+    setState((){
+      _realuser = real_user;
+    });
   }
 
   @override
@@ -88,14 +100,28 @@ class _friendfollowingState extends State<friendfollowing> {
               child: new Row(
                 children: <Widget>[
                   
-                  new Container(
-                    width: 55,
-                    height: 55,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage('$image_url'),
-                        fit: BoxFit.fill,
+                  GestureDetector(
+                    onTap: ()async{
+                      if(key != _realuser){
+                        await storage.write(key: 'friend-id', value: '$key');
+                        await storage.write(key: 'friend-name', value: '$name');
+                        await storage.write(key: 'friend-image', value: '$image_url');
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
+                      }
+                      else if( key == _realuser){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>profile()));
+                      }
+                    },
+                    child: new Container(
+                      width: 55,
+                      height: 55,
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: NetworkImage('$image_url'),
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),

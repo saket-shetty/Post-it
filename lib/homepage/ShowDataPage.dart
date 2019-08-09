@@ -1,4 +1,5 @@
 import 'package:firebaseapp/friend/message_friend.dart';
+import 'package:firebaseapp/user/message_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myData.dart';
@@ -80,13 +81,21 @@ class _ShowDataPageState extends State<ShowDataPage> {
     await storage.delete(key: 'message-image');
     await storage.delete(key: 'message');
     await storage.delete(key: 'timestamp');
+    setState((){});
   }
 
   Future send_message_data(String message_name,msg_image,msg,timestamp) async{
+    delete_data();
     await storage.write(key: 'message-name', value:'$message_name');
     await storage.write(key: 'message-image', value: '$msg_image');
     await storage.write(key: 'message', value: '$msg');
     await storage.write(key: 'timestamp', value: '$timestamp');
+    
+
+    setState(() {
+      
+    });
+    Navigator.push(context, MaterialPageRoute(builder: (context) => displaymessage()));
   }
 
 
@@ -278,6 +287,15 @@ class _ShowDataPageState extends State<ShowDataPage> {
             'Post it',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
           ),
+          actions: <Widget>[
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>message_page()));
+              },
+              child: Icon(Icons.send),
+            ),
+            new Padding(padding: new EdgeInsets.only(right: 5.0)),
+          ],
         ),
 
         bottomNavigationBar: BottomNavigationBar(
@@ -361,8 +379,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
         delete_data();
         send_message_data(name,image,message,timestamp);
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => displaymessage()));
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),

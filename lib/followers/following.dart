@@ -1,3 +1,4 @@
+import 'package:firebaseapp/friend/friendprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myFollowing.dart';
@@ -95,14 +96,23 @@ class _followingState extends State<following> {
               child: new Row(
                 children: <Widget>[
                   
-                  new Container(
-                    width: 55,
-                    height: 55,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage('$image_url'),
-                        fit: BoxFit.fill,
+                  GestureDetector(
+                    onTap: ()async{
+                      await storage.write(key: 'friend-id', value: '$key');
+                      await storage.write(key: 'friend-name', value: '$name');
+                      await storage.write(key: 'friend-image', value: '$image_url');
+
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
+                    },
+                    child: new Container(
+                      width: 55,
+                      height: 55,
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: NetworkImage('$image_url'),
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),

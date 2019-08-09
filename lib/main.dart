@@ -115,6 +115,8 @@ class _homepageState extends State<homepage> {
         ref.child('user').child(userid).child('imageurl').set(image);
         ref.child('user').child(userid).child('name').set(name);
 
+
+
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShowDataPage()));
         break;

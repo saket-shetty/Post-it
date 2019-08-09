@@ -107,11 +107,19 @@ class _profileState extends State<profile> {
       ref.child('user').child('$userid').child('status').once().then((DataSnapshot snap) async{
         var statusvalue = await snap.value;
         print('status :$statusvalue');
-
-        setState(() {
-          status = statusvalue;
-          _status.text = status;
-        });
+        
+          if(statusvalue != null){
+            status = statusvalue;
+            _status.text = status;
+            print('If statement');
+            setState(() {});
+          }
+          else{
+            status= 'Tap here to enter status';
+            _status.text = status;
+            print('else statement');
+            setState(() {});
+          }
       });
 
       ref.child('user').child('$userid').child('about').once().then((DataSnapshot snap) async{
@@ -119,8 +127,17 @@ class _profileState extends State<profile> {
         print('about :$about');
 
         setState(() {
-          _about = about;
-          _aboutcontroller.text = _about;
+          if(about != null){
+            _about = about;
+            _aboutcontroller.text = _about;
+          }
+          else{
+            _about = 'Tap here to enter About';
+            _aboutcontroller.text = _about;
+            setState(() {
+              
+            });
+          }
         });
       });
 
@@ -354,6 +371,8 @@ class _profileState extends State<profile> {
                                   fontSize: 18.0
                                 ),
                               ),
+
+                              new Padding( padding:  new EdgeInsets.all(5)),
 
                               new GestureDetector(
                                 onTap: (){
