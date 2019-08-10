@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -48,6 +47,7 @@ class _message_friendState extends State<message_friend> {
     friend_id = await storage.read(key: 'friend-id');
     friend_profile = await storage.read(key: 'friend-image');
     friend_name = await storage.read(key: 'friend-name');
+    await storage.write(key: 'page-name', value: 'messagefriend');
     setState(() {
       
     });
@@ -94,7 +94,7 @@ class _message_friendState extends State<message_friend> {
     ref.child('user').child('$user_id').child('message').child('$friend_id').onChildChanged.listen((snap){
       var key = snap.snapshot.key;
       var value = snap.snapshot.value;
-      // print('Child added : ${key}');
+      print('Child added : ${key}');
       print('Child added : ${value}');
 
       if(value['time'] != null && value['name'] != null && value['image']!= null && value['message']!= null && value['friend-name'] != null && value['friend-image']!= null){
@@ -113,9 +113,11 @@ class _message_friendState extends State<message_friend> {
     }
   }
 
-  void submit_comment_database() {
+  void submit_comment_database() async {
     var now = Instant.now();
     var timestamp = now.toString('yyyyMMddHHmmss');
+
+    await storage.write(key: 'page-name', value: 'messagefriend');
 
     var time = DateTime.now();
     int hour;

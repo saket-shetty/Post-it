@@ -138,7 +138,7 @@ class _message_pageState extends State<message_page> {
                       textAlign: TextAlign.start,
                     ),
                     new Padding(
-                      padding: new EdgeInsets.only(bottom: 3.0),
+                      padding: new EdgeInsets.only(bottom: 5.0),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,7 +147,7 @@ class _message_pageState extends State<message_page> {
                           '$name',
                           style: new TextStyle(
                             fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                            color: Colors.black54,
                             fontSize: 14,
                           ),
                         ),

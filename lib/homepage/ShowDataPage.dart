@@ -14,6 +14,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:flushbar/flushbar.dart';
 
 
 class ShowDataPage extends StatefulWidget {
@@ -69,6 +70,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
     String userimage = await storage.read(key: 'user-image');
     String username = await storage.read(key: 'user-name');
     String userid = await storage.read(key:'user-id');
+    await storage.write(key: 'page-name', value:'init');
     setState(() {
      _userimage = userimage;
      _newname = username;
@@ -90,13 +92,33 @@ class _ShowDataPageState extends State<ShowDataPage> {
     await storage.write(key: 'message-image', value: '$msg_image');
     await storage.write(key: 'message', value: '$msg');
     await storage.write(key: 'timestamp', value: '$timestamp');
-    
-
+  
     setState(() {
       
     });
     Navigator.push(context, MaterialPageRoute(builder: (context) => displaymessage()));
   }
+
+
+
+  Future snackbar_friend_out_of_circle(BuildContext content) async{
+    Flushbar(
+      title: "New Friend Messaged You",
+      message: "Someone out of your friend circle messaged you",
+      duration: Duration(seconds: 5),
+      isDismissible: true,
+    ).show(content);
+  }
+
+  Future welcome_snackbar() async{
+    Flushbar(
+      title: "Hello",
+      message: "Welcome to Post it hope you like the app",
+      duration: Duration(seconds: 2),
+      isDismissible: true,
+    )..show(context);
+  }
+
 
 
 
@@ -106,17 +128,15 @@ class _ShowDataPageState extends State<ShowDataPage> {
     get_user_detail();
     get_all_data();
     reportstatus();
+    new_friend_message_out_of_circle();
 
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
     //snap.value will give the json format value and snap.value.key will give all the child/key the json contains.
 
-
-
-    for(var x in likecolorlist){
-      print(x);
-    }
   }
+
+
 
   Future get_all_data() async{
     await _userid;
@@ -173,7 +193,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
         timestamplist.add(newlist);
 
         ref.child('node-name').child('$newlist').child('likes').child('$_userid').once().then((DataSnapshot snap) async{
-          print('this is user id $_userid');
+          // print('this is user id $_userid');
           await _userid;
           var snapdata = snap.value;
           if(snapdata != null){
@@ -200,6 +220,36 @@ class _ShowDataPageState extends State<ShowDataPage> {
       setState(() {});
     });
   }
+
+
+  Future new_friend_message_out_of_circle() async{
+    var _userid = await storage.read(key: 'user-id');
+    int show_new_snackbar = 0;
+
+    Future.delayed(Duration(milliseconds: 100),(){
+
+      // print('blah blah blah :$_userid');
+      ref.child('user').child('$_userid').child('message').onChildAdded.listen((data){
+        
+        // print('Data received :$data');
+        if(show_new_snackbar == 0){
+          welcome_snackbar();
+        }
+        else{
+          snackbar_friend_out_of_circle(context);
+        }
+
+      });
+    });
+
+    Future.delayed(Duration(seconds: 2),(){
+      show_new_snackbar++;
+    });
+
+    setState((){}); 
+  }
+
+
 
   _likesnackbar() {
     final snackbar = new SnackBar(
@@ -435,6 +485,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
                           new GestureDetector(
                             onTap: () {
                               // Update -> comment on message
+
 
                             },
                             child: Row(
