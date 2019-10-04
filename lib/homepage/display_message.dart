@@ -475,6 +475,9 @@ class _displaymessageState extends State<displaymessage> {
         }
         else if(id != _userid){
           await store.write(key:'friend-id', value: '$id');
+          await store.write(key: 'friend-name', value: '$cmnt_name');
+          await store.write(key: 'friend-image', value: '$cmnt_image');
+
           Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
         }
         else if(id == _userid){
