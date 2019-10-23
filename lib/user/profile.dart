@@ -210,14 +210,16 @@ class _profileState extends State<profile> {
                         width: 150.0,
                         height: 150.0,
                         decoration: BoxDecoration(
-                            color: Colors.red,
+                          border: Border.all(
+                            width: 1.0,
+                            color: Colors.black38
+                          ),
                             image: DecorationImage(
                                 image: CachedNetworkImageProvider(_newurl),
                                 fit: BoxFit.cover,),
                             borderRadius: BorderRadius.all(Radius.circular(75.0)),
-                            boxShadow: [
-                              BoxShadow(blurRadius: 7.0, color: Colors.black)
-                            ])),
+                          ),
+                        ),
                       SizedBox(height: 10.0),
                       Text(
                         '$_newname',

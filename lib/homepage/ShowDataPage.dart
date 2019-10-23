@@ -99,17 +99,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => displaymessage()));
   }
 
-
-
-  Future snackbar_friend_out_of_circle(BuildContext content) async{
-    Flushbar(
-      title: "New Friend Messaged You",
-      message: "Someone out of your friend circle messaged you",
-      duration: Duration(seconds: 5),
-      isDismissible: true,
-    ).show(content);
-  }
-
   Future welcome_snackbar() async{
     Flushbar(
       title: "Hello",
@@ -128,7 +117,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
     get_user_detail();
     get_all_data();
     reportstatus();
-    new_friend_message_out_of_circle();
+    welcome_snackbar();
 
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
@@ -222,34 +211,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
   }
 
 
-  Future new_friend_message_out_of_circle() async{
-    var _userid = await storage.read(key: 'user-id');
-    int show_new_snackbar = 0;
-
-    Future.delayed(Duration(milliseconds: 100),(){
-
-      // print('blah blah blah :$_userid');
-      ref.child('user').child('$_userid').child('message').onChildAdded.listen((data){
-        
-        // print('Data received :$data');
-        if(show_new_snackbar == 0){
-          welcome_snackbar();
-        }
-        else{
-          snackbar_friend_out_of_circle(context);
-        }
-
-      });
-    });
-
-    Future.delayed(Duration(seconds: 2),(){
-      show_new_snackbar++;
-    });
-
-    setState((){}); 
-  }
-
-
 
   _likesnackbar() {
     final snackbar = new SnackBar(
@@ -330,9 +291,11 @@ class _ShowDataPageState extends State<ShowDataPage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
+
         appBar: new AppBar(
           backgroundColor: Colors.deepPurpleAccent,
           centerTitle: true,
+          automaticallyImplyLeading: false,
           title: Text(
             'Post it',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
@@ -342,9 +305,12 @@ class _ShowDataPageState extends State<ShowDataPage> {
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>message_page()));
               },
-              child: Icon(Icons.send),
+              child: Icon(
+                Icons.message,
+
+              ),
             ),
-            new Padding(padding: new EdgeInsets.only(right: 5.0)),
+            new Padding(padding: new EdgeInsets.only(right: 10.0)),
           ],
         ),
 
@@ -446,7 +412,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
                       new Text(
                         '$message',
                         maxLines: 5,
-//                    style: Theme.of(context).textTheme.title,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,
@@ -469,7 +434,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
                                   // Update -> like message and display total count of like in profile
                                   ref.child('node-name').child('$timestamp').child('likes').child('$_userid').child('name').set('$_newname');
                                   _likesnackbar();
-                                  },
+                                },
                                 child: new Icon(
                                   LineIcons.heart,
                                   size: 20,
@@ -484,9 +449,9 @@ class _ShowDataPageState extends State<ShowDataPage> {
                           ),
                           new GestureDetector(
                             onTap: () {
-                              // Update -> comment on message
-
-
+                              sharemessage = message;
+                              delete_data();
+                              send_message_data(name,image,message,timestamp);
                             },
                             child: Row(
                               children: <Widget>[
@@ -616,13 +581,13 @@ class _ShowDataPageState extends State<ShowDataPage> {
               ],
             ),
             new Padding(
-              padding: EdgeInsets.only(bottom: 15.0),
+              padding: EdgeInsets.only(bottom: 10.0),
             ),
           ],
           ),
         )
       );
-  }
+    }
 
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
