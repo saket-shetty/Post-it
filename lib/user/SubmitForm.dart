@@ -123,6 +123,9 @@ class _FormPageState extends State<FormPage> {
       ref.child('user').child('$_userid').child('post').child('$time').child('msgtime').set('$date');
       ref.child('user').child('$_userid').child('name').set('$_newname');
       ref.child('user').child('$_userid').child('imageurl').set('$_newurl');
+      ref.child('notification').child('name').set('$_newname');
+      ref.child('notification').child('message').set('$_message');
+
       Navigator.of(context).pop();
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => ShowDataPage()));

@@ -8,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebaseapp/splashscreen/splashscreen.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() => runApp(
       new MaterialApp(
@@ -30,6 +31,8 @@ class _homepageState extends State<homepage> {
   final FirebaseAuth _fAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
+  FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+
   final storage = new FlutterSecureStorage();
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
@@ -38,8 +41,8 @@ class _homepageState extends State<homepage> {
   //you have to fill the form to get api and secret key 
   //contact me if you want the key to check the functionality      
   static final TwitterLogin twitterLogin = new TwitterLogin(
-    consumerKey: 'RJuHNmCNKx3FDanlG0AFeQfsk',
-    consumerSecret: '5UMj7QVGHkXpbCIx8SKjS5ofEWlR7ds6DNqPJBmuXuFy97rYNH',
+    consumerKey: 'MwJtsArQqT1ZPnnzLabe8MEpZ',
+    consumerSecret: 'keeq4dUYRE9UkitnI1n4JNesAuicgShqgxQ9UCSfVG4xoT7R9e',
   );
   
   //Google login
@@ -53,7 +56,7 @@ class _homepageState extends State<homepage> {
       idToken: gSA.idToken,
     );
 
-    FirebaseUser googleuser = await _fAuth.signInWithCredential(credential);
+    FirebaseUser googleuser = (await _fAuth.signInWithCredential(credential)).user;
         
     var displayname = googleuser.displayName;
     var photourl = googleuser.photoUrl;
@@ -95,7 +98,7 @@ class _homepageState extends State<homepage> {
       authTokenSecret: result.session.secret,
     );
 
-    FirebaseUser user = await _fAuth.signInWithCredential(credential);
+    FirebaseUser user = (await _fAuth.signInWithCredential(credential)).user;
 
     switch (result.status) {
       case TwitterLoginStatus.loggedIn:
@@ -132,7 +135,37 @@ class _homepageState extends State<homepage> {
     // TODO: implement initState
 
     read_token();
+
+
+    firebaseMessaging.configure(
+      onLaunch: (Map<String, dynamic> msg) {
+        print(" onLaunch called ${(msg)}");
+      },
+      onResume: (Map<String, dynamic> msg) {
+        print(" onResume called ${(msg)}");
+      },
+      onMessage: (Map<String, dynamic> msg) {
+        
+        // showNotification(msg);
+
+        print(" onMessage called ${(msg)}");
+      },
+    );
+    firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, alert: true, badge: true));
+    firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings setting) {
+      print('IOS Setting Registed');
+    });
+    firebaseMessaging.getToken().then((token) {
+      fcm_token(token);
+    });
     super.initState();
+  }
+
+  fcm_token(var token){
+      print('this is token $token');
+      ref.child('fcm-token').child(token).child('token').set(token);
   }
 
   //creating session which will store the token of the user and check whether the token is present or not
