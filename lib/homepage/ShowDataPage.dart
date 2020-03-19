@@ -401,7 +401,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
         child: Column(
           children: <Widget>[
             Slidable(
-              delegate: new SlidableDrawerDelegate(),
+              actionPane: new SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
               child: new Card(
                 child: new Container(

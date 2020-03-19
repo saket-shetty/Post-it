@@ -3,8 +3,26 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.15.5+2/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-0.1.2/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.4.4+3/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-0.1.1+2/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database-3.1.3/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-6.0.12/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-3.3.1+1/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.1.4/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.8.4/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-0.5.0+1/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-1.1.5/android" />
+          </set>
+        </option>
         <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>

@@ -3,12 +3,12 @@ import 'package:firebaseapp/homepage/ShowDataPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebaseapp/splashscreen/splashscreen.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:flutter_twitter/flutter_twitter.dart';
 
 void main() => runApp(
       new MaterialApp(
@@ -39,11 +39,13 @@ class _homepageState extends State<homepage> {
 
   //Remember to remove both key
   //you have to fill the form to get api and secret key 
-  //contact me if you want the key to check the functionality      
-  static final TwitterLogin twitterLogin = new TwitterLogin(
-    consumerKey: 'MwJtsArQqT1ZPnnzLabe8MEpZ',
-    consumerSecret: 'keeq4dUYRE9UkitnI1n4JNesAuicgShqgxQ9UCSfVG4xoT7R9e',
-  );
+  //contact me if you want the key to check the functionality
+
+
+//  static final TwitterLogin twitterLogin = new TwitterLogin(
+//    consumerKey: 'MwJtsArQqT1ZPnnzLabe8MEpZ',
+//    consumerSecret: 'keeq4dUYRE9UkitnI1n4JNesAuicgShqgxQ9UCSfVG4xoT7R9e',
+//  );
   
   //Google login
   //login proved us with username, imageurl, token and user id
@@ -90,45 +92,45 @@ class _homepageState extends State<homepage> {
   // Remember to remove secret key and api key before uploading to github
   // Twitter doesnt provide the user image url so i am using a default image which will be same for every user.
 
-  void _Twitterlogin() async {
-    final TwitterLoginResult result = await twitterLogin.authorize();
-    var session = result.session;
-    final AuthCredential credential = TwitterAuthProvider.getCredential(
-      authToken: session.token,
-      authTokenSecret: result.session.secret,
-    );
-
-    FirebaseUser user = (await _fAuth.signInWithCredential(credential)).user;
-
-    switch (result.status) {
-      case TwitterLoginStatus.loggedIn:
-        var name = result.session.username;
-        var image =
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-I5E9Vn6dFsuJnrJfJVcpNp6KNQ74ZSjKoGn5t9-pGLddxDG';
-        var userid = result.session.userId;
-        var accesstoken = result.session.token;
-        print('twitter name :${result.session.username}');
-        print('twitter name :${result.session.userId}');
-        print('${result.session.token}');
-        
-        store_user_detail(userid,image,name);
-        store_token(accesstoken);
-        read_token();
-
-        ref.child('user').child(userid).child('imageurl').set(image);
-        ref.child('user').child(userid).child('name').set(name);
-
-
-
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ShowDataPage()));
-        break;
-      case TwitterLoginStatus.cancelledByUser:
-        break;
-      case TwitterLoginStatus.error:
-        break;
-    }
-  }
+//  void _Twitterlogin() async {
+//    final TwitterLoginResult result = await twitterLogin.authorize();
+//    var session = result.session;
+//    final AuthCredential credential = TwitterAuthProvider.getCredential(
+//      authToken: session.token,
+//      authTokenSecret: result.session.secret,
+//    );
+//
+//    FirebaseUser user = (await _fAuth.signInWithCredential(credential)).user;
+//
+//    switch (result.status) {
+//      case TwitterLoginStatus.loggedIn:
+//        var name = result.session.username;
+//        var image =
+//            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi-I5E9Vn6dFsuJnrJfJVcpNp6KNQ74ZSjKoGn5t9-pGLddxDG';
+//        var userid = result.session.userId;
+//        var accesstoken = result.session.token;
+//        print('twitter name :${result.session.username}');
+//        print('twitter name :${result.session.userId}');
+//        print('${result.session.token}');
+//
+//        store_user_detail(userid,image,name);
+//        store_token(accesstoken);
+//        read_token();
+//
+//        ref.child('user').child(userid).child('imageurl').set(image);
+//        ref.child('user').child(userid).child('name').set(name);
+//
+//
+//
+//        Navigator.push(
+//            context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+//        break;
+//      case TwitterLoginStatus.cancelledByUser:
+//        break;
+//      case TwitterLoginStatus.error:
+//        break;
+//    }
+//  }
 
   @override
   void initState() {
@@ -256,45 +258,46 @@ class _homepageState extends State<homepage> {
                     padding: new EdgeInsets.all(8.0),
                   ),
 
-                  new Container(
-                    width: 180,
-                    height: 50.0,
-                    child: new InkWell(
-                      onTap: () {
-                        _Twitterlogin();
-                      },
-                      child: Material(
-                        borderRadius: BorderRadius.circular(25.0),
-                        color: Colors.lightBlue,
-                        shadowColor: Colors.lightBlue.withOpacity(0.8),
-                        elevation: 7.0,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Icon(
-                                LineIcons.twitter,
-                                size: 25.0,
-                                color: Colors.white,
-                              ),
-                              new VerticalDivider(
-                                color: Colors.black,
-                                width: 22.0,
-                              ),
-                              new Text(
-                                'Twitter',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+//                  new Container(
+//                    width: 180,
+//                    height: 50.0,
+//                    child: new InkWell(
+//                      onTap: () {
+//                        _Twitterlogin();
+//                      },
+//                      child: Material(
+//                        borderRadius: BorderRadius.circular(25.0),
+//                        color: Colors.lightBlue,
+//                        shadowColor: Colors.lightBlue.withOpacity(0.8),
+//                        elevation: 7.0,
+//                        child: Center(
+//                          child: Row(
+//                            mainAxisAlignment: MainAxisAlignment.center,
+//                            children: <Widget>[
+//                              new Icon(
+//                                LineIcons.twitter,
+//                                size: 25.0,
+//                                color: Colors.white,
+//                              ),
+//                              new VerticalDivider(
+//                                color: Colors.black,
+//                                width: 22.0,
+//                              ),
+//                              new Text(
+//                                'Twitter',
+//                                style: TextStyle(
+//                                  color: Colors.white,
+//                                  fontSize: 18.0,
+//                                  fontWeight: FontWeight.w300,
+//                                ),
+//                              ),
+//                            ],
+//                          ),
+//                        ),
+//                      ),
+//                    ),
+//                  ),
+
                   new Padding(
                     padding: new EdgeInsets.all(8.0),
                   ),

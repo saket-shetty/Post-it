@@ -38,11 +38,6 @@ class _FormPageState extends State<FormPage> {
   @override
   void initState() {
     // TODO: implement initState
-
-    // getname().then(updatename);
-    // getdata().then(updateurl);
-    // getemail().then(updateemail);
-    // getuserid().then(updateuserid);
     get_user_detail();
     get_report_status();
     super.initState();
@@ -67,24 +62,6 @@ class _FormPageState extends State<FormPage> {
       
     });
   }
-
-  // Future reportstatus() async {
-  //   await Future.delayed(Duration(milliseconds: 100), () {
-  //     ref.child('user').child('$_userid').child('Report').once().then((DataSnapshot snap) {
-  //       var data = snap.value.keys;
-
-  //       for(var key in data){
-  //         reportcount++;
-  //       }
-  //       print('value of data :$data');
-  //       setState(() {
-  //         if(reportcount>=10){
-  //           report_status = 'true';
-  //         }
-  //       });
-  //     });
-  //   });
-  // }
 
   void _submit() {
     final form = formKey.currentState;
