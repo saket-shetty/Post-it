@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
@@ -16,6 +17,7 @@
             <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-0.1.1+2/android" />
             <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_database-3.1.3/android" />
             <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_messaging-6.0.12/android" />
+            <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_facebook_login-3.0.0/android" />
             <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-3.3.1+1/android" />
             <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.1.4/android" />
             <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.8.4/android" />
