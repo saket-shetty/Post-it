@@ -56,7 +56,6 @@ class _homepageState extends State<homepage> {
 
     var displayname = googleuser.displayName;
     var photourl = googleuser.photoUrl;
-    var useremail = googleuser.email;
     var userid = googleSignInAccount.id;
     var token = gSA.accessToken;
 
@@ -73,11 +72,13 @@ class _homepageState extends State<homepage> {
     return null;
   }
 
-  Future _loginWithFB() async {
+  Future<FirebaseUser> _loginWithFB() async {
     FacebookLogin fbLogin = new FacebookLogin();
 
     // Open facebook page so that user can login
     final result = await fbLogin.logIn(['email', 'public_profile']);
+
+
 
     switch (result.status) {
 
