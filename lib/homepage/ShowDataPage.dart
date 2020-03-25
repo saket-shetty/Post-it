@@ -221,6 +221,15 @@ class _ShowDataPageState extends State<ShowDataPage> {
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
+  _dislikesnackbar() {
+    final snackbar = new SnackBar(
+      content: new Text('Disliked'),
+      duration: new Duration(milliseconds: 2000),
+      backgroundColor: Colors.red,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
   _same_user() {
     final snackbar = new SnackBar(
       content: new Text('You cannot message yourself'),
@@ -432,8 +441,24 @@ class _ShowDataPageState extends State<ShowDataPage> {
                               new GestureDetector(
                                 onTap: () {
                                   // Update -> like message and display total count of like in profile
-                                  ref.child('node-name').child('$timestamp').child('likes').child('$_userid').child('name').set('$_newname');
-                                  _likesnackbar();
+
+                                  ref.child('node-name').child('$timestamp').child('likes').once().then((DataSnapshot snap) async {
+									var data = snap.value.keys;
+									print('like data ${data}');
+
+									var likefound = false;
+									for(var x in data){
+										if(x == _userid){
+											likefound = true;
+											_dislikesnackbar();
+                                  			ref.child('node-name').child('$timestamp').child('likes').child('$_userid').remove();
+										}
+									}
+									if(likefound == false){
+                                  		_likesnackbar();
+                                  		ref.child('node-name').child('$timestamp').child('likes').child('$_userid').child('name').set('$_newname');
+									}
+								  });
                                 },
                                 child: new Icon(
                                   LineIcons.heart,

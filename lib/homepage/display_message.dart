@@ -33,7 +33,8 @@ class _displaymessageState extends State<displaymessage> {
   final formKey = new GlobalKey<FormState>();
 
   List commentlist = [];
-  List likelist = [];
+
+  int likecount = 0;
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
@@ -64,13 +65,6 @@ class _displaymessageState extends State<displaymessage> {
       _senderimageurl = senderimage;
       _userid = userid;
     });
-
-    print('name $_newname');
-    print('name $_newurl');
-    print('name $_newmessage');
-    print('name $_newmessagetimestamp');
-    print('name $_sendername');
-    print('name $_senderimageurl');
     setState(() {
       
     });
@@ -82,27 +76,23 @@ class _displaymessageState extends State<displaymessage> {
     // TODO: implement initState
     post_data();
     _comments();
-    setState(() {});
     _likes();
-
+    setState(() {});
     super.initState();
   }
 
   Future _comments() async {
     var _newtimestamp = await store.read(key: 'timestamp');
     await new Future.delayed(Duration(milliseconds: 150),() async{
-          print('time stamp :$_newmessagetimestamp');
       await ref.child('node-name').child('$_newtimestamp').child('comments').once().then((DataSnapshot snap) {
           var keys = snap.value.keys;
           var data = snap.value;
 
           for (var key in keys) {
-            print('this is keys :$key');
             if (key != 'no-comments') {
               commentlist.add(key);
               commentlist.sort();
             } else if (key == 'no-comments') {
-              print('its found :$key');
             }
           }
           
@@ -123,17 +113,13 @@ class _displaymessageState extends State<displaymessage> {
   }
 
   Future _likes() async {
+    var _newtimestamp = await store.read(key: 'timestamp');
     await new Future.delayed(new Duration(milliseconds: 100), () {
-      ref.child('node-name').child('$_newmessagetimestamp').child('likes').once().then((DataSnapshot snap) {
-          var keys = snap.value.keys;
-          var data = snap.value;
-
-          for (var key in keys) {
-            print('this is keys :$key');
-            if (key != 'no-likes') {
-              likelist.add(key);
-            } else if (key == 'no-likes') {
-              print('its found :$key');
+      ref.child('node-name').child('$_newtimestamp').child('likes').once().then((DataSnapshot snap) {
+          var data = snap.value.keys;
+          for (var key in data) {
+            if(key != 'no-likes'){
+              likecount++;
             }
           }
           setState(() {});
@@ -147,7 +133,6 @@ class _displaymessageState extends State<displaymessage> {
 
     if (form.validate()) {
       form.save();
-      print('this is message :$_message');
       submit_comment_database();
     }
   }
@@ -172,9 +157,6 @@ class _displaymessageState extends State<displaymessage> {
     }
 
     var currentime = hour.toString()+":"+time.minute.toString()+' '+state;
-
-
-    print('this is comments timestamp :$timestamp');
 
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('comment').set('$_message');
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('image_url').set('$_senderimageurl');
@@ -262,6 +244,8 @@ class _displaymessageState extends State<displaymessage> {
                         children: <Widget>[
                           new GestureDetector(
                             onTap: () {
+
+                              
                               // Update -> like message and display total count of like in profile
                             },
                             child: new Icon(
@@ -274,7 +258,7 @@ class _displaymessageState extends State<displaymessage> {
                             padding: new EdgeInsets.only(right: 3.0),
                           ),
                           new Text(
-                            '${likelist.length}',
+                            '${likecount}',
                             style: new TextStyle(
                               color: Colors.white,
                             ),
@@ -286,7 +270,6 @@ class _displaymessageState extends State<displaymessage> {
                           new GestureDetector(
                             onTap: () {
                               var time = new DateTime.now();
-                              print('$time');
                             },
                             child: new Icon(
                               Icons.chat_bubble_outline,
@@ -305,7 +288,6 @@ class _displaymessageState extends State<displaymessage> {
                       new GestureDetector(
                         onTap: () {
                           // Update -> Add new functionality
-                          print('$size');
                         },
                         child: new Icon(
                           Icons.star_border,

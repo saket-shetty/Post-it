@@ -33,7 +33,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.firebaseapp"
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
         versionName "1"
