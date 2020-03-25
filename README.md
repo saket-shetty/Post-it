@@ -1,8 +1,6 @@
 <center><h3>Post It</h3></center>
 
-- [Android](https://github.com/saket-shetty/Post-it/blob/master/app-release.apk)
-
-App link: https://drive.google.com/open?id=1cOBkuDWbt3fOvkcgi930rCXG2PDcYWne<br>
+- [Android](https://github.com/saket-shetty/Post-it/raw/master/app-release.apk)
 
 <table>
   <tr>
