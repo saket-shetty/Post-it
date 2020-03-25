@@ -1,5 +1,19 @@
 <center><h3>Post It</h3></center>
-App link: https://drive.google.com/open?id=1cOBkuDWbt3fOvkcgi930rCXG2PDcYWne<br>
+
+- [Android](https://github.com/saket-shetty/Post-it/raw/master/app-release.apk)
+
+<table>
+  <tr>
+    <td><img src="material/login.jpeg" width="180" height="300"></td>
+     <td><img src="material/main.jpeg" width="180" height="300"></td>
+     <td><img src="material/message.jpeg" width="180" height="300"></td>
+  </tr>
+  <tr>
+     <td><img src="material/profile.jpeg" width="180" height="300"></td>
+     <td><img src="material/chat.jpeg" width="180" height="300"></td>
+   </tr>
+
+</table>
 
 Post it is a social media app which is made entirely with flutter and firebase.
 The user can login with both Google and Twitter.<br>
@@ -20,19 +34,6 @@ Now in this new update the user can also report other user if they misbehave and
 In this new update instead of default icon and splash created a new icon and splash screen for the app which will run for the set time<br>
 
 Any Query contact: shettysaket05@gmail.com
-
-<table>
-  <tr>
-    <td><img src="material/login.jpeg" width="180" height="300"></td>
-     <td><img src="material/main.jpeg" width="180" height="300"></td>
-     <td><img src="material/message.jpeg" width="180" height="300"></td>
-  </tr>
-  <tr>
-     <td><img src="material/profile.jpeg" width="180" height="300"></td>
-     <td><img src="material/chat.jpeg" width="180" height="300"></td>
-   </tr>
-
-</table>
 
 
 # firebaseapp
