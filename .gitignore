@@ -4,8 +4,22 @@
 .packages
 .pub/
 
-build/
+build/*
 
 .flutter-plugins
 
-!build/app/outputs/apk/release
+!build/app/
+
+build/app/*
+
+!build/app/outputs/
+
+build/app/outputs/*
+
+!build/app/outputs/apk/
+
+build/app/outputs/apk/*
+
+!build/app/outputs/apk/release/
+
+
