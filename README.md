@@ -1,6 +1,6 @@
 <center><h3>Post It</h3></center>
 
-- [Android](https://github.com/saket-shetty/Post-it/raw/master/app-release.apk)
+- [Android](https://github.com/saket-shetty/Post-it/raw/master/build/app/outputs/apk/release/app-release.apk)
 
 <table>
   <tr>
