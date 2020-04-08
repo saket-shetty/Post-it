@@ -41,7 +41,6 @@ class _message_pageState extends State<message_page> {
           var childdata = snap.value;
 
           for(var x in childkey){
-            // print('${childdata[x]['message']}');
             message_page_data data = new message_page_data(childdata[x]['friend-name'], childdata[x]['friend-image'],
              childdata[x]['message'], childdata[x]['time'], '$key');
              allData.add(data);

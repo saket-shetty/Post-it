@@ -7,3 +7,5 @@
 build/
 
 .flutter-plugins
+
+!build/app/outputs/apk/release

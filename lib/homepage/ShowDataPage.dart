@@ -16,12 +16,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:flushbar/flushbar.dart';
 
-
 class ShowDataPage extends StatefulWidget {
   @override
   _ShowDataPageState createState() => _ShowDataPageState();
 }
-
 
 class _ShowDataPageState extends State<ShowDataPage> {
   List<myData> allData = [];
@@ -59,47 +57,46 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  int reportcount=0;
+  int reportcount = 0;
 
   var report_status;
 
   Color _likecolor;
 
-
-  Future get_user_detail() async{
+  Future get_user_detail() async {
     String userimage = await storage.read(key: 'user-image');
     String username = await storage.read(key: 'user-name');
-    String userid = await storage.read(key:'user-id');
-    await storage.write(key: 'page-name', value:'init');
+    String userid = await storage.read(key: 'user-id');
+    await storage.write(key: 'page-name', value: 'init');
     setState(() {
-     _userimage = userimage;
-     _newname = username;
-     _userid = userid;
+      _userimage = userimage;
+      _newname = username;
+      _userid = userid;
     });
   }
 
-  Future delete_data() async{
+  Future delete_data() async {
     await storage.delete(key: 'message-name');
     await storage.delete(key: 'message-image');
     await storage.delete(key: 'message');
     await storage.delete(key: 'timestamp');
-    setState((){});
+    setState(() {});
   }
 
-  Future send_message_data(String message_name,msg_image,msg,timestamp) async{
+  Future send_message_data(
+      String message_name, msg_image, msg, timestamp) async {
     delete_data();
-    await storage.write(key: 'message-name', value:'$message_name');
+    await storage.write(key: 'message-name', value: '$message_name');
     await storage.write(key: 'message-image', value: '$msg_image');
     await storage.write(key: 'message', value: '$msg');
     await storage.write(key: 'timestamp', value: '$timestamp');
-  
-    setState(() {
-      
-    });
-    Navigator.push(context, MaterialPageRoute(builder: (context) => displaymessage()));
+
+    setState(() {});
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => displaymessage()));
   }
 
-  Future welcome_snackbar() async{
+  Future welcome_snackbar() async {
     Flushbar(
       title: "Hello",
       message: "Welcome to Post it hope you like the app",
@@ -108,12 +105,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
     )..show(context);
   }
 
-
-
-
   @override
   void initState() {
-
     get_user_detail();
     get_all_data();
     reportstatus();
@@ -122,14 +115,11 @@ class _ShowDataPageState extends State<ShowDataPage> {
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
     //snap.value will give the json format value and snap.value.key will give all the child/key the json contains.
-
   }
 
-
-
-  Future get_all_data() async{
+  Future get_all_data() async {
     await _userid;
-      ref.child('node-name').limitToLast(20).once().then((DataSnapshot snap) {
+    ref.child('node-name').limitToLast(20).once().then((DataSnapshot snap) {
       var keys = snap.value.keys;
       var data = snap.value;
 
@@ -146,7 +136,12 @@ class _ShowDataPageState extends State<ShowDataPage> {
         //counting the number of comment the post got.
         //so that the user will get to know the amount of comments that his/her post got
 
-        ref.child('node-name').child('$newlist').child('comments').once().then((DataSnapshot datasnap) {
+        ref
+            .child('node-name')
+            .child('$newlist')
+            .child('comments')
+            .once()
+            .then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
 
           for (var x in key) {
@@ -166,7 +161,12 @@ class _ShowDataPageState extends State<ShowDataPage> {
         //counting the number of likes the post got.
         //so that the user will get to know the amount of likes that his/her post got
 
-        ref.child('node-name').child('$newlist').child('likes').once().then((DataSnapshot datasnap) {
+        ref
+            .child('node-name')
+            .child('$newlist')
+            .child('likes')
+            .once()
+            .then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
           for (var x in key) {
             if (x != 'no-likes') {
@@ -181,21 +181,24 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
         timestamplist.add(newlist);
 
-        ref.child('node-name').child('$newlist').child('likes').child('$_userid').once().then((DataSnapshot snap) async{
+        ref
+            .child('node-name')
+            .child('$newlist')
+            .child('likes')
+            .child('$_userid')
+            .once()
+            .then((DataSnapshot snap) async {
           // print('this is user id $_userid');
           await _userid;
           var snapdata = snap.value;
-          if(snapdata != null){
+          if (snapdata != null) {
             _likecolor = Colors.red;
             likecolorlist.add(0xFFFF0000);
-          }
-          else{
+          } else {
             _likecolor = Colors.white;
             likecolorlist.add(0xFFFFFFFF);
           }
-          setState(() {
-            
-          });
+          setState(() {});
         });
 
         myData d = new myData(
@@ -209,8 +212,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
       setState(() {});
     });
   }
-
-
 
   _likesnackbar() {
     final snackbar = new SnackBar(
@@ -257,41 +258,40 @@ class _ShowDataPageState extends State<ShowDataPage> {
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
-
-
-  Future store_friend_detail(String friendid, friendimage, friendname) async{
+  Future store_friend_detail(String friendid, friendimage, friendname) async {
     await storage.write(key: 'friend-id', value: '$friendid');
     await storage.write(key: 'friend-image', value: '$friendimage');
     await storage.write(key: 'friend-name', value: '$friendname');
   }
 
-  Future store_user_detail(String userid, userimage, username) async{
+  Future store_user_detail(String userid, userimage, username) async {
     await storage.write(key: 'user-id', value: '$userid');
     await storage.write(key: 'user-image', value: '$userimage');
     await storage.write(key: 'user-name', value: '$username');
 
-    setState((){});
+    setState(() {});
   }
-
 
   Future reportstatus() async {
-      ref.child('user').child('550107170').child('Report').once().then((DataSnapshot snap) async {
+    ref
+        .child('user')
+        .child('550107170')
+        .child('Report')
+        .once()
+        .then((DataSnapshot snap) async {
+      var data = await snap.value.keys;
 
-        var data = await snap.value.keys;
-
-        for(var key in data){
-          reportcount++;
+      for (var key in data) {
+        reportcount++;
+      }
+      setState(() async {
+        if (reportcount >= 10) {
+          report_status = 'true';
+          await storage.write(key: 'report-status', value: '$report_status');
         }
-        setState(() async {
-          if(reportcount>=10){
-            report_status = 'true';
-            await storage.write(key: 'report-status', value: '$report_status');
-          }
-        });
       });
+    });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -300,7 +300,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
-
         appBar: new AppBar(
           backgroundColor: Colors.deepPurpleAccent,
           centerTitle: true,
@@ -311,18 +310,17 @@ class _ShowDataPageState extends State<ShowDataPage> {
           ),
           actions: <Widget>[
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>message_page()));
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => message_page()));
               },
               child: Icon(
                 Icons.message,
-
               ),
             ),
             new Padding(padding: new EdgeInsets.only(right: 10.0)),
           ],
         ),
-
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _onTapIndex,
           onTap: (int index) {
@@ -376,16 +374,15 @@ class _ShowDataPageState extends State<ShowDataPage> {
                     itemCount: allData.length,
                     itemBuilder: (_, index) {
                       return UI(
-                        allData[index].name,
-                        allData[index].message,
-                        allData[index].msgtime,
-                        allData[index].image,
-                        timestamplist[index],
-                        countofcomment[index],
-                        allData[index].userid,
-                        countoflikes[index],
-                        likecolorlist[index]
-                      );
+                          allData[index].name,
+                          allData[index].message,
+                          allData[index].msgtime,
+                          allData[index].image,
+                          timestamplist[index],
+                          countofcomment[index],
+                          allData[index].userid,
+                          countoflikes[index],
+                          likecolorlist[index]);
                     },
                   ),
           ),
@@ -395,230 +392,263 @@ class _ShowDataPageState extends State<ShowDataPage> {
     );
   }
 
-  Widget UI(String name, String message, String datetime, String image,
-      String timestamp, int cmntcount, String userid, int likecount, int likecolor) {
-
+  Widget UI(
+      String name,
+      String message,
+      String datetime,
+      String image,
+      String timestamp,
+      int cmntcount,
+      String userid,
+      int likecount,
+      int likecolor) {
     return new InkWell(
-      onTap: () {
-        sharemessage = message;
-        delete_data();
-        send_message_data(name,image,message,timestamp);
-
-      },
-      child: Container(
-        margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-        child: Column(
-          children: <Widget>[
-            Slidable(
-              actionPane: new SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              child: new Card(
-                child: new Container(
-                  color: Color(color_value[Random().nextInt(5)]),
-                  padding: new EdgeInsets.all(20.0),
-                  child: new Column(
-                    children: <Widget>[
-                      new Text(
-                        '$message',
-                        maxLines: 5,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      new Padding(
-                        padding: EdgeInsets.all(7.0),
-                      ),
-                      new Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                      ),
-                      new Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              new GestureDetector(
-                                onTap: () {
-                                  // Update -> like message and display total count of like in profile
-
-                                  ref.child('node-name').child('$timestamp').child('likes').once().then((DataSnapshot snap) async {
-									var data = snap.value.keys;
-									print('like data ${data}');
-
-									var likefound = false;
-									for(var x in data){
-										if(x == _userid){
-											likefound = true;
-											_dislikesnackbar();
-                                  			ref.child('node-name').child('$timestamp').child('likes').child('$_userid').remove();
-										}
-									}
-									if(likefound == false){
-                                  		_likesnackbar();
-                                  		ref.child('node-name').child('$timestamp').child('likes').child('$_userid').child('name').set('$_newname');
-									}
-								  });
-                                },
-                                child: new Icon(
-                                  LineIcons.heart,
-                                  size: 20,
-                                  color: Color(likecolor),
-                                ),
-                              ),
-                              new Text(
-                                '${likecount}',
-                                style: new TextStyle(color: Colors.white),
-                              )
-                            ],
+        onTap: () {
+          sharemessage = message;
+          delete_data();
+          send_message_data(name, image, message, timestamp);
+        },
+        child: Container(
+          margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+          child: Column(
+            children: <Widget>[
+              Slidable(
+                actionPane: new SlidableDrawerActionPane(),
+                actionExtentRatio: 0.25,
+                child: new Card(
+                  child: new Container(
+                    color: Color(color_value[Random().nextInt(5)]),
+                    padding: new EdgeInsets.all(20.0),
+                    child: new Column(
+                      children: <Widget>[
+                        new Text(
+                          '$message',
+                          maxLines: 5,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w400,
                           ),
-                          new GestureDetector(
-                            onTap: () {
-                              sharemessage = message;
-                              delete_data();
-                              send_message_data(name,image,message,timestamp);
-                            },
-                            child: Row(
+                        ),
+                        new Padding(
+                          padding: EdgeInsets.all(7.0),
+                        ),
+                        new Padding(
+                          padding: EdgeInsets.only(top: 10.0),
+                        ),
+                        new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Row(
                               children: <Widget>[
-                                new Icon(
-                                  Icons.chat_bubble_outline,
-                                  size: 20,
-                                  color: Colors.white,
+                                new GestureDetector(
+                                  onTap: () {
+                                    // Update -> like message and display total count of like in profile
+
+                                    ref
+                                        .child('node-name')
+                                        .child('$timestamp')
+                                        .child('likes')
+                                        .once()
+                                        .then((DataSnapshot snap) async {
+                                      var data = snap.value.keys;
+                                      print('like data ${data}');
+
+                                      var likefound = false;
+                                      for (var x in data) {
+                                        if (x == _userid) {
+                                          likefound = true;
+                                          _dislikesnackbar();
+                                          ref
+                                              .child('node-name')
+                                              .child('$timestamp')
+                                              .child('likes')
+                                              .child('$_userid')
+                                              .remove();
+                                        }
+                                      }
+                                      if (likefound == false) {
+                                        _likesnackbar();
+                                        ref
+                                            .child('node-name')
+                                            .child('$timestamp')
+                                            .child('likes')
+                                            .child('$_userid')
+                                            .child('name')
+                                            .set('$_newname');
+                                      }
+                                    });
+                                  },
+                                  child: new Icon(
+                                    LineIcons.heart,
+                                    size: 20,
+                                    color: Color(likecolor),
+                                  ),
                                 ),
-                                countofcomment.length == 0
-                                    ? new Text('0')
-                                    : Text(
-                                        '$cmntcount',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
+                                new Text(
+                                  '${likecount}',
+                                  style: new TextStyle(color: Colors.white),
+                                )
                               ],
                             ),
-                          ),
-                          new GestureDetector(
-                            onTap: () {
-                              // Update -> Add new functionality
-                            },
-                            child: new Icon(
-                              Icons.star_border,
-                              size: 20,
-                              color: Colors.white,
+                            new GestureDetector(
+                              onTap: () {
+                                sharemessage = message;
+                                delete_data();
+                                send_message_data(
+                                    name, image, message, timestamp);
+                              },
+                              child: Row(
+                                children: <Widget>[
+                                  new Icon(
+                                    Icons.chat_bubble_outline,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                  countofcomment.length == 0
+                                      ? new Text('0')
+                                      : Text(
+                                          '$cmntcount',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                ],
+                              ),
                             ),
-                          )
-                        ],
-                      )
-                    ],
+                            new GestureDetector(
+                              onTap: () {
+                                // Update -> Add new functionality
+                              },
+                              child: new Icon(
+                                Icons.star_border,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
+                actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: new IconSlideAction(
+                      caption: 'Report',
+                      color: Colors.redAccent,
+                      icon: Icons.report,
+                      onTap: () {
+                        if (userid != _userid) {
+                          ref
+                              .child('user')
+                              .child('$userid')
+                              .child('Report')
+                              .child('$_userid')
+                              .set('1');
+                          _report_user();
+                        } else if (userid == _userid) {
+                          _report_yourself();
+                        }
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: new IconSlideAction(
+                      icon: Icons.message,
+                      caption: 'Message',
+                      color: Colors.deepOrangeAccent,
+                      onTap: () async {
+                        if (userid != _userid) {
+                          await storage.write(
+                              key: 'friend-id', value: '$userid');
+                          await storage.write(
+                              key: 'friend-name', value: '$name');
+                          await storage.write(
+                              key: 'friend-image', value: '$image');
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => message_friend()));
+                        } else if (userid == _userid) {
+                          _same_user();
+                        }
+                      },
+                    ),
+                  )
+                ],
               ),
-              actions: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top:4.0, bottom:4.0),
-                  child: new IconSlideAction(
-                    caption: 'Report',
-                    color: Colors.redAccent,
-                    icon: Icons.report,
-                    onTap: (){
-                      if(userid != _userid){
-                        ref.child('user').child('$userid').child('Report').child('$_userid').set('1');
-                        _report_user();
-                      }
-                      else if(userid == _userid){
-                        _report_yourself();
-                      }
-                    },
+              new Row(
+                children: <Widget>[
+                  new Padding(
+                    padding: EdgeInsets.all(10.0),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                  child: new IconSlideAction(
-                    icon: Icons.message,
-                    caption: 'Message',
-                    color: Colors.deepOrangeAccent,
-                    onTap: () async{
+                  new InkWell(
+                    onTap: () {
+                      // comparing the userid to check whether the userid is of the corrent user or the other user
+                      // if the userid is of the current user show the user's profile
+                      // if the userid is not of the current user show the profile of that user
 
-                      if(userid != _userid){
-                        await storage.write(key: 'friend-id', value: '$userid');
-                        await storage.write(key: 'friend-name', value: '$name');
-                        await storage.write(key: 'friend-image', value: '$image');
-
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend()));
-                      }
-                      else if(userid == _userid){
-                        _same_user();
-                      }
-
-                    },
-                  ),
-                )
-              ],
-            ),
-            new Row(
-              children: <Widget>[
-                new Padding(
-                  padding: EdgeInsets.all(10.0),
-                ),
-                new InkWell(
-                  onTap: () {
-                    // comparing the userid to check whether the userid is of the corrent user or the other user
-                    // if the userid is of the current user show the user's profile
-                    // if the userid is not of the current user show the profile of that user
-
-                    if (_userid == userid) {
-
-                      store_user_detail('$userid','$image','$name');
-                      // have to reset the sharedpref so that the other users data should not get shown accidentally
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => profile()));
+                      if (_userid == userid) {
+                        store_user_detail('$userid', '$image', '$name');
+                        // have to reset the sharedpref so that the other users data should not get shown accidentally
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => profile()));
 //                      print('user id :$userid');
-                    } else {
-
-                      store_friend_detail('$userid','$image','$name');
-                      Navigator.push(context,MaterialPageRoute( builder: (context) => friendprofile()));
+                      } else {
+                        store_friend_detail('$userid', '$image', '$name');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => friendprofile()));
 //                      print('friend id :$userid');
-                    }
-                  },
-                  child: new Container(
-                    width: 40.0,
-                    height: 40.0,
-                    //margin: EdgeInsets.only(top: 30.0),
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: new DecorationImage(
-                        fit: BoxFit.fill,
-                        image: new CachedNetworkImageProvider('$image'),
+                      }
+                    },
+                    child: new Container(
+                      width: 40.0,
+                      height: 40.0,
+                      //margin: EdgeInsets.only(top: 30.0),
+                      decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                          fit: BoxFit.fill,
+                          image: new CachedNetworkImageProvider('$image'),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                new Padding(
-                  padding: EdgeInsets.only(right: 10.0),
-                ),
-                new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(
-                      '$name',
-                    ),
-                    new Text(
-                      '$datetime',
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            new Padding(
-              padding: EdgeInsets.only(bottom: 10.0),
-            ),
-          ],
+                  new Padding(
+                    padding: EdgeInsets.only(right: 10.0),
+                  ),
+                  new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text(
+                        '$name',
+                      ),
+                      new Text(
+                        '$datetime',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              new Padding(
+                padding: EdgeInsets.only(bottom: 10.0),
+              ),
+            ],
           ),
-        )
-      );
-    }
+        ));
+  }
 
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
     setState(() {
-      Navigator.pop(context, MaterialPageRoute(builder: (context) => ShowDataPage()));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+      Navigator.pop(
+          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
     });
     return null;
   }

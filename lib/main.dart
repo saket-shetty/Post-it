@@ -60,6 +60,9 @@ class _homepageState extends State<homepage> {
     var token = gSA.accessToken;
 
     store_user_detail(userid, photourl, displayname);
+
+    FCM_token(userid);
+
     store_token(token);
     read_token();
     Navigator.push(
@@ -77,8 +80,6 @@ class _homepageState extends State<homepage> {
 
     // Open facebook page so that user can login
     final result = await fbLogin.logIn(['email', 'public_profile']);
-
-
 
     switch (result.status) {
 
@@ -99,6 +100,9 @@ class _homepageState extends State<homepage> {
 
         store_user_detail(
             profile['id'], profile['picture']['data']['url'], profile['name']);
+
+        FCM_token(profile['id']);
+
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShowDataPage()));
         break;
@@ -120,11 +124,24 @@ class _homepageState extends State<homepage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: implement initStat
+    read_token(); 
+    super.initState();
+  }
 
-    read_token();
+  //creating session which will store the token of the user and check whether the token is present or not
+  // If token is present it will redirect to the homepage otherwise landing / login page
+  Future read_token() async {
+    String value = await storage.read(key: 'valid_token');
+        if (value != null) {
 
-    firebaseMessaging.configure(
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+    }
+  }
+
+  FCM_token(var userid){
+      firebaseMessaging.configure(
       onLaunch: (Map<String, dynamic> msg) {
         print(" onLaunch called ${(msg)}");
       },
@@ -132,11 +149,10 @@ class _homepageState extends State<homepage> {
         print(" onResume called ${(msg)}");
       },
       onMessage: (Map<String, dynamic> msg) {
-        // showNotification(msg);
-
         print(" onMessage called ${(msg)}");
       },
     );
+
     firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, alert: true, badge: true));
     firebaseMessaging.onIosSettingsRegistered
@@ -144,24 +160,9 @@ class _homepageState extends State<homepage> {
       print('IOS Setting Registed');
     });
     firebaseMessaging.getToken().then((token) {
-      fcm_token(token);
+      ref.child('fcm-token').child(token).child('token').set(token);
+      ref.child('user').child(userid).child('fcm-token').set(token);
     });
-    super.initState();
-  }
-
-  fcm_token(var token) {
-    ref.child('fcm-token').child(token).child('token').set(token);
-  }
-
-  //creating session which will store the token of the user and check whether the token is present or not
-  // If token is present it will redirect to the homepage otherwise landing / login page
-  Future read_token() async {
-    String value = await storage.read(key: 'valid_token');
-
-    if (value != null) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
-    }
   }
 
   Future store_user_detail(String userid, userimage, username) async {
