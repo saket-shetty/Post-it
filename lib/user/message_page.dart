@@ -31,9 +31,6 @@ class _message_pageState extends State<message_page> {
       var parentkey = snap.value.keys;
       var parentdata = snap.value;
 
-      print('Data :$parentdata');
-      print('Key :$parentkey');
-
       for(var key in parentkey){
         ref.child('user').child('$userid').child('message').child('${key.toString()}').limitToLast(1).once().then((DataSnapshot snap){
           

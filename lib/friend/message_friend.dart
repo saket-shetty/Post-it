@@ -97,7 +97,7 @@ class _message_friendState extends State<message_friend> {
       print('Child added : ${key}');
       print('Child added : ${value}');
 
-      if(value['time'] != null && value['name'] != null && value['image']!= null && value['message']!= null && value['friend-name'] != null && value['friend-image']!= null){
+      if(value['time'] != null && value['name'] != null && value['image']!= null && value['message']!= null && value['friend-name'] != null && value['friend-image']!= null && value['friendid'] != null){
         message_data data = new message_data(value['id'], value['time'], value['name'], value['image'], value['message']);
         allData.add(data);
       }
@@ -143,6 +143,7 @@ class _message_friendState extends State<message_friend> {
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('name').set('$user_name');
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('friend-image').set('$friend_profile');
     ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('friend-name').set('$friend_name');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('friendid').set('$friend_id');
 
     ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('message').set('$_message');
     ref.child('user').child('$friend_id').child('message').child('$user_id').child('$timestamp').child('id').set('$user_id');
