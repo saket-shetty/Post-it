@@ -136,59 +136,26 @@ class _ShowDataPageState extends State<ShowDataPage> {
         //counting the number of comment the post got.
         //so that the user will get to know the amount of comments that his/her post got
 
-        ref
-            .child('node-name')
-            .child('$newlist')
-            .child('comments')
-            .once()
-            .then((DataSnapshot datasnap) {
+        ref.child('node-name').child('$newlist').child('comments').once().then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
-
-          for (var x in key) {
-            if (x != 'no-comments') {
-              count = count + 1;
-            } else if (x == 'no-comments') {
-//              print('no comments hit :$x');
-            }
-          }
-//          print('adding value count to list');
+          count = key.length - 1;
           countofcomment.add(count);
-          count = 0;
-
           setState(() {});
         });
 
         //counting the number of likes the post got.
         //so that the user will get to know the amount of likes that his/her post got
 
-        ref
-            .child('node-name')
-            .child('$newlist')
-            .child('likes')
-            .once()
-            .then((DataSnapshot datasnap) {
+        ref.child('node-name').child('$newlist').child('likes').once().then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
-          for (var x in key) {
-            if (x != 'no-likes') {
-              likecount = likecount + 1;
-            } else if (x == 'no-comments') {}
-          }
+          likecount = key.length - 1;
           countoflikes.add(likecount);
-          likecount = 0;
-
           setState(() {});
         });
 
         timestamplist.add(newlist);
 
-        ref
-            .child('node-name')
-            .child('$newlist')
-            .child('likes')
-            .child('$_userid')
-            .once()
-            .then((DataSnapshot snap) async {
-          // print('this is user id $_userid');
+        ref.child('node-name').child('$newlist').child('likes').child('$_userid').once().then((DataSnapshot snap) async {
           await _userid;
           var snapdata = snap.value;
           if (snapdata != null) {
@@ -281,10 +248,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
         .then((DataSnapshot snap) async {
       var data = await snap.value.keys;
 
-      for (var key in data) {
-        reportcount++;
-      }
       setState(() async {
+        this.reportcount = data.length;
         if (reportcount >= 10) {
           report_status = 'true';
           await storage.write(key: 'report-status', value: '$report_status');
@@ -452,7 +417,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
                                         .once()
                                         .then((DataSnapshot snap) async {
                                       var data = snap.value.keys;
-                                      print('like data ${data}');
 
                                       var likefound = false;
                                       for (var x in data) {
@@ -595,14 +559,12 @@ class _ShowDataPageState extends State<ShowDataPage> {
                         // have to reset the sharedpref so that the other users data should not get shown accidentally
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => profile()));
-//                      print('user id :$userid');
                       } else {
                         store_friend_detail('$userid', '$image', '$name');
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => friendprofile()));
-//                      print('friend id :$userid');
                       }
                     },
                     child: new Container(

@@ -31,7 +31,6 @@ class _friendfollowerState extends State<friendfollower> {
 
   Future get_user_id() async{
     String friend_id = await storage.read(key: 'friend-id');
-    print('ye chalega kya $friend_id');
 
     setState(() {
         _userid = friend_id;
@@ -42,9 +41,6 @@ class _friendfollowerState extends State<friendfollower> {
       ref.child('user').child('$friend_id').child('follower').once().then((DataSnapshot snap) async{
       var key = await snap.value.keys;
       var data = await snap.value;
-
-      print('this is data $data');
-      print('these are keys $key');
 
       for(var keys in key){
         myFollower myfollo = new myFollower(keys,data['$keys']['name'], data['$keys']['image_url']);

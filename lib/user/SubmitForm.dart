@@ -65,7 +65,6 @@ class _FormPageState extends State<FormPage> {
 
   void _submit() {
     final form = formKey.currentState;
-    print("name :$_newname");
     if (form.validate()) {
       form.save();
       submitmessage();
@@ -75,7 +74,6 @@ class _FormPageState extends State<FormPage> {
   void submitmessage() {
     var now = Instant.now();
     var time = now.toString('yyyyMMddHHmmss');
-    print('this is post time :$time');
 
     var date_day = new DateTime.now().day;
     var date_month = new DateTime.now().month;

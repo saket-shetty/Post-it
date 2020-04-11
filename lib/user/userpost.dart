@@ -53,14 +53,11 @@ class _userpostState extends State<userpost> {
     await new Future.delayed(
       new Duration(milliseconds: 200),
       () {
-        print("user id :$_userid");
-
         ref.child('user').child('$_userid').child('post').once().then((DataSnapshot snap) {
           var data = snap.value;
           var key = snap.value.keys;
 
           for(var y in key){
-            print('normal :$y');
             normalkey.add(y);
           }
 
@@ -75,7 +72,6 @@ class _userpostState extends State<userpost> {
               allData.add(userdata);
           }
           setState(() {});
-          print("User Data is :$key");
         });
       },
     );

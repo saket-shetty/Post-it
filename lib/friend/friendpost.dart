@@ -45,14 +45,12 @@ class _friendpostState extends State<friendpost> {
       _userid = friend_id;
       _newimgurl = friend_image;
     });
-    // print('friend ka id hai :$value');
   }
 
   Future<String> _comments() async {
     await new Future.delayed(
       new Duration(milliseconds: 200),
           () {
-        print("user id :$_userid");
 
         ref.child('user').child('$_userid').child('post').once().then((DataSnapshot snap) {
           var data = snap.value;
@@ -61,11 +59,7 @@ class _friendpostState extends State<friendpost> {
           name = data['name'];
           imageurl = data['imageurl'];
 
-          print('$name');
-          print('$imageurl');
-
           for(var y in key){
-              print('normal :$y');
               normalkey.add(y);
           }
           List list =[];
@@ -81,7 +75,6 @@ class _friendpostState extends State<friendpost> {
             allData.add(userdata);
           }
           setState(() {});
-          print("User Data is :$key");
         });
       },
     );

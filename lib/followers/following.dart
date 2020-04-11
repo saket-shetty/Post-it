@@ -27,7 +27,6 @@ class _followingState extends State<following> {
 
   Future get_user_id() async{
     String user_id = await storage.read(key: 'user-id');
-    print('ye chalega kya $user_id');
 
     setState(() {
         _userid = user_id;
@@ -38,9 +37,6 @@ class _followingState extends State<following> {
       ref.child('user').child('$_userid').child('following').once().then((DataSnapshot snap) async{
       var key = await snap.value.keys;
       var data = await snap.value;
-
-      print('this is data $data');
-      print('these are keys $key');
 
       for(var keys in key){
         myFollowing myfollo = new myFollowing(keys,data['$keys']['name'], data['$keys']['image_url']);
@@ -128,7 +124,6 @@ class _followingState extends State<following> {
                       icon: new Icon(Icons.cancel),
                       alignment: Alignment.bottomRight,
                       onPressed: (){
-                        print('cancel is clicked $key');
                         delete_follow(key);
                     }
                   ),

@@ -64,7 +64,6 @@ class _friendprofileState extends State<friendprofile> {
         for(var following in key){
           followingcount++;
         }
-        print('this is keys ${key}');
         setState(() {
           
         });
@@ -77,8 +76,6 @@ class _friendprofileState extends State<friendprofile> {
         for(var post in key){
           postcount ++;
         }
-        print('post count :$postcount');
-        print('Post key :$key');
 
         setState(() {
           
@@ -92,8 +89,6 @@ class _friendprofileState extends State<friendprofile> {
         for(var post in key){
           followercount++;
         }
-        print('follower count :$followercount');
-        print('Post key :$key');
 
         setState(() {
           
@@ -104,7 +99,6 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('status').once().then((DataSnapshot snap) async{
         var statusvalue = await snap.value;
-        print('status :$statusvalue');
 
         setState(() {
           status = statusvalue;
@@ -115,7 +109,6 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('about').once().then((DataSnapshot snap) async{
         var about = await snap.value;
-        print('about :$about');
 
         setState(() {
           _about = about;
@@ -124,7 +117,6 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('follower').child('$_userid').once().then((DataSnapshot snap) async{
         var data = await snap.value;
-        print('data exst :$data'); 
         if(data != null){
           setState((){
             _followertext = 'FOLLOWING';
@@ -139,7 +131,6 @@ class _friendprofileState extends State<friendprofile> {
       _friendid = friend_id;
       _friendimageurl = friend_image;
     });
-    // print('friend ka id hai :$value');
   }
 
   TextStyle textstyle = new TextStyle(
