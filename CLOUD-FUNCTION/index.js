@@ -23,3 +23,57 @@ exports.helloWorld = functions.database.ref('notification').onWrite(evt => {
         }
     });
 });
+
+
+exports.message = functions.database.ref('user/{user-id}/message/{friend-id}/{timestamp}').onWrite(evt => {
+    var FriendId = 404;
+
+    if(evt.after._data.name != null && evt.after._data.message != null && evt.after._data.id != null && evt.after._data.friendid != null && evt.after._data.time !=null && evt.after._data.image != null){
+        console.log("12345656 :", evt.after._data['friend-name']);
+        FriendId = evt.after._data.friendid
+    }
+
+    const payload = {
+        notification:{
+            title : evt.after._data['friend-name'],
+            body : evt.after._data.message,
+            badge : '1',
+            sound : 'default'
+        }
+    };
+
+    if(FriendId != 404){
+        console.log("FriendID : ", FriendId);
+        return admin.database().ref('user/'+FriendId+'/fcm-token').on('value', (token)=>{
+            console.log("code here");
+            console.log(token.val());
+            return admin.messaging().sendToDevice(token.val(), payload);
+        });
+    }
+});
+
+exports.comment = functions.database.ref('node-name/{timestamp}/comments/{msgtimestamp}').onWrite(evt =>{
+    console.log(evt);
+
+    var userid = 404;
+
+    if(evt.after._data.comment != null && evt.after._data.id != null != null && evt.after._data.name != null && evt.after._data.postid != null){
+        userid = evt.after._data.postid;
+    }
+
+    const payload = {
+        notification:{
+            head: "Comment",
+            title : evt.after._data.comment,
+            body : evt.after._data.name,
+            badge : '1',
+            sound : 'default'
+        }
+    }
+
+    if(userid != 404){
+        return admin.database().ref('user/'+userid+'/fcm-token').on('value', (token)=>{
+            return admin.messaging().sendToDevice(token.val(), payload);
+        });
+    }
+});

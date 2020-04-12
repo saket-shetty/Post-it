@@ -1,3 +1,5 @@
+import 'package:firebaseapp/data/friendProfile.dart';
+import 'package:firebaseapp/data/sendMessageData.dart';
 import 'package:firebaseapp/friend/message_friend.dart';
 import 'package:firebaseapp/user/message_page.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
     0xFFFF7F50
   ];
 
-  var verify_email = '';
   var _userid;
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
@@ -67,7 +68,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
     String userimage = await storage.read(key: 'user-image');
     String username = await storage.read(key: 'user-name');
     String userid = await storage.read(key: 'user-id');
-    await storage.write(key: 'page-name', value: 'init');
     setState(() {
       _userimage = userimage;
       _newname = username;
@@ -75,25 +75,21 @@ class _ShowDataPageState extends State<ShowDataPage> {
     });
   }
 
-  Future delete_data() async {
-    await storage.delete(key: 'message-name');
-    await storage.delete(key: 'message-image');
-    await storage.delete(key: 'message');
-    await storage.delete(key: 'timestamp');
-    setState(() {});
-  }
-
   Future send_message_data(
-      String message_name, msg_image, msg, timestamp) async {
-    delete_data();
-    await storage.write(key: 'message-name', value: '$message_name');
-    await storage.write(key: 'message-image', value: '$msg_image');
-    await storage.write(key: 'message', value: '$msg');
-    await storage.write(key: 'timestamp', value: '$timestamp');
+      String message_name, msg_image, msg, timestamp, userid,likecount, cmntcount) async {
+      sendMessageData sendData = new sendMessageData(
+        message_name,
+        msg_image,
+        msg,
+        timestamp,
+        userid,
+        likecount,
+        cmntcount
+      );
 
     setState(() {});
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => displaymessage()));
+        context, MaterialPageRoute(builder: (context) => displaymessage(data: sendData)));
   }
 
   Future welcome_snackbar() async {
@@ -223,20 +219,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
       backgroundColor: Colors.red,
     );
     scaffoldKey.currentState.showSnackBar(snackbar);
-  }
-
-  Future store_friend_detail(String friendid, friendimage, friendname) async {
-    await storage.write(key: 'friend-id', value: '$friendid');
-    await storage.write(key: 'friend-image', value: '$friendimage');
-    await storage.write(key: 'friend-name', value: '$friendname');
-  }
-
-  Future store_user_detail(String userid, userimage, username) async {
-    await storage.write(key: 'user-id', value: '$userid');
-    await storage.write(key: 'user-image', value: '$userimage');
-    await storage.write(key: 'user-name', value: '$username');
-
-    setState(() {});
   }
 
   Future reportstatus() async {
@@ -370,8 +352,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
     return new InkWell(
         onTap: () {
           sharemessage = message;
-          delete_data();
-          send_message_data(name, image, message, timestamp);
+          send_message_data(name, image, message, timestamp, userid, likecount, cmntcount);
         },
         child: Container(
           margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -458,9 +439,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
                             new GestureDetector(
                               onTap: () {
                                 sharemessage = message;
-                                delete_data();
                                 send_message_data(
-                                    name, image, message, timestamp);
+                                    name, image, message, timestamp, userid, likecount, cmntcount);
                               },
                               child: Row(
                                 children: <Widget>[
@@ -524,17 +504,11 @@ class _ShowDataPageState extends State<ShowDataPage> {
                       color: Colors.deepOrangeAccent,
                       onTap: () async {
                         if (userid != _userid) {
-                          await storage.write(
-                              key: 'friend-id', value: '$userid');
-                          await storage.write(
-                              key: 'friend-name', value: '$name');
-                          await storage.write(
-                              key: 'friend-image', value: '$image');
-
+                              friendProfile fp = new friendProfile(userid, name, image);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => message_friend()));
+                                  builder: (context) => message_friend(data: fp)));
                         } else if (userid == _userid) {
                           _same_user();
                         }
@@ -555,16 +529,14 @@ class _ShowDataPageState extends State<ShowDataPage> {
                       // if the userid is not of the current user show the profile of that user
 
                       if (_userid == userid) {
-                        store_user_detail('$userid', '$image', '$name');
-                        // have to reset the sharedpref so that the other users data should not get shown accidentally
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => profile()));
                       } else {
-                        store_friend_detail('$userid', '$image', '$name');
+                        friendProfile fp = new friendProfile(userid, name, image);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => friendprofile()));
+                                builder: (context) => friendprofile(data: fp)));
                       }
                     },
                     child: new Container(

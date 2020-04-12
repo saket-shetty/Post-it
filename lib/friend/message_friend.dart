@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:time_machine/time_machine.dart';
+import 'package:firebaseapp/data/friendProfile.dart';
 
 
 class message_friend extends StatefulWidget {
   @override
+  final friendProfile data;
+  message_friend({this.data});
   _message_friendState createState() => _message_friendState();
 }
 
@@ -44,12 +47,10 @@ class _message_friendState extends State<message_friend> {
   }
 
   Future get_friend_detail() async{
-    friend_id = await storage.read(key: 'friend-id');
-    friend_profile = await storage.read(key: 'friend-image');
-    friend_name = await storage.read(key: 'friend-name');
-    await storage.write(key: 'page-name', value: 'messagefriend');
     setState(() {
-      
+      this.friend_id = widget.data.friendId;
+      this.friend_profile = widget.data.friendImg;
+      this.friend_name = widget.data.friendName;
     });
   }
 
@@ -64,7 +65,7 @@ class _message_friendState extends State<message_friend> {
 
   Future get_message_detail() async{
     user_id = await storage.read(key: 'user-id');
-    friend_id = await storage.read(key: 'friend-id');
+    friend_id = widget.data.friendId;
     ref.child('user').child('$user_id').child('message').child('$friend_id').once().then((DataSnapshot snap) async{
       var keys = await snap.value.keys;
       var newdata = await snap.value;
@@ -90,7 +91,7 @@ class _message_friendState extends State<message_friend> {
 
   Future new_data_retrieve() async{
     user_id = await storage.read(key: 'user-id');
-    friend_id = await storage.read(key: 'friend-id');
+    friend_id = widget.data.friendId;
     ref.child('user').child('$user_id').child('message').child('$friend_id').onChildChanged.listen((snap){
       var key = snap.snapshot.key;
       var value = snap.snapshot.value;
@@ -114,8 +115,6 @@ class _message_friendState extends State<message_friend> {
   void submit_comment_database() async {
     var now = Instant.now();
     var timestamp = now.toString('yyyyMMddHHmmss');
-
-    await storage.write(key: 'page-name', value: 'messagefriend');
 
     var time = DateTime.now();
     int hour;

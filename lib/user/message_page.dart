@@ -1,3 +1,4 @@
+import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:firebaseapp/friend/message_friend.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -29,7 +30,6 @@ class _message_pageState extends State<message_page> {
     var userid = await storage.read(key: 'user-id');
     ref.child('user').child('$userid').child('message').once().then((DataSnapshot snap){
       var parentkey = snap.value.keys;
-      var parentdata = snap.value;
 
       for(var key in parentkey){
         ref.child('user').child('$userid').child('message').child('${key.toString()}').limitToLast(1).once().then((DataSnapshot snap){
@@ -88,11 +88,8 @@ class _message_pageState extends State<message_page> {
   Widget messageUI(var name, var image, var message, var time, var friendid){
   return GestureDetector(
     onTap: () async{
-      await storage.write(key: 'friend-id', value: '$friendid');
-      await storage.write(key: 'friend-name', value: '$name');
-      await storage.write(key: 'friend-image', value: '$image');
-      setState(() {});
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend()));
+      friendProfile fp = new friendProfile(friendid, name, image);
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend(data: fp)));
       },
         child: Column(
         children: <Widget>[

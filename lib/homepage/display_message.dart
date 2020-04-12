@@ -1,3 +1,4 @@
+import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:firebaseapp/friend/friendprofile.dart';
 import 'package:firebaseapp/user/profile.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myComment.dart';
 import 'package:time_machine/time_machine.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebaseapp/data/sendMessageData.dart';
 
 class displaymessage extends StatefulWidget {
   @override
+  final sendMessageData data;
+  displaymessage({this.data});
   _displaymessageState createState() => _displaymessageState();
 }
 
@@ -16,15 +20,17 @@ class _displaymessageState extends State<displaymessage> {
   bool display_textbox = false;
   bool _display_comment = false;
 
-  final store = new FlutterSecureStorage();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  final store = new FlutterSecureStorage();
+
 
   List<myComment> allData = [];
 
   var _newname = '';
   var _newurl = '';
   var _newmessage = '';
-  var _newmessagetimestamp;
+  var _newmessagetimestamp = '';
   var _sendername = '';
   var _senderimageurl = '';
   var _message;
@@ -34,40 +40,28 @@ class _displaymessageState extends State<displaymessage> {
 
   List commentlist = [];
 
-  int likecount = 0;
-
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
-  _snackbar() {
-    final snackbar = new SnackBar(
-      content: new Text('Sorry! cannot process old comments'),
-      duration: new Duration(milliseconds: 2000),
-      backgroundColor: Colors.green,
-    );
-    scaffoldKey.currentState.showSnackBar(snackbar);
-  }
-
   Future post_data() async{
-    String newname = await store.read(key: 'message-name');
-    String newurl = await store.read(key: 'message-image');
-    String message = await store.read(key: 'message');
-    String timestamp = await store.read(key: 'timestamp');
+    String newname = widget.data.messagename;
+    String newurl = widget.data.messageimg;
+    String message = widget.data.message;
+    String timestamp = widget.data.timestamp;
+
     String sendername = await store.read(key: 'user-name');
     String senderimage = await store.read(key: 'user-image');
     String userid = await store.read(key: 'user-id');
 
     setState((){
-      _newname = newname;
-      _newurl = newurl;
-      _newmessage = message;
-      _newmessagetimestamp = timestamp;
-      _sendername = sendername;
-      _senderimageurl = senderimage;
-      _userid = userid;
+      this._newname = newname;
+      this._newurl = newurl;
+      this._newmessage = message;
+      this._newmessagetimestamp = timestamp;
+      this._sendername = sendername;
+      this._senderimageurl = senderimage;
+      this._userid = userid;
     });
-    setState(() {
-      
-    });
+
   }
 
 
@@ -76,15 +70,13 @@ class _displaymessageState extends State<displaymessage> {
     // TODO: implement initState
     post_data();
     _comments();
-    _likes();
     setState(() {});
     super.initState();
   }
 
   Future _comments() async {
-    var _newtimestamp = await store.read(key: 'timestamp');
     await new Future.delayed(Duration(milliseconds: 150),() async{
-      await ref.child('node-name').child('$_newtimestamp').child('comments').once().then((DataSnapshot snap) {
+      await ref.child('node-name').child('${widget.data.timestamp}').child('comments').once().then((DataSnapshot snap) {
           var keys = snap.value.keys;
           var data = snap.value;
 
@@ -112,21 +104,6 @@ class _displaymessageState extends State<displaymessage> {
     });
   }
 
-  Future _likes() async {
-    var _newtimestamp = await store.read(key: 'timestamp');
-    await new Future.delayed(new Duration(milliseconds: 100), () {
-      ref.child('node-name').child('$_newtimestamp').child('likes').once().then((DataSnapshot snap) {
-          var data = snap.value.keys;
-          for (var key in data) {
-            if(key != 'no-likes'){
-              likecount++;
-            }
-          }
-          setState(() {});
-        },
-      );
-    });
-  }
 
   void submit_comment() {
     final form = formKey.currentState;
@@ -163,6 +140,7 @@ class _displaymessageState extends State<displaymessage> {
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('name').set('$_sendername');
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('id').set('$_userid');
     ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('time').set('$currentime');
+    ref.child('node-name').child('$_newmessagetimestamp').child('comments').child('$timestamp').child('postid').set('${widget.data.userid}');
   }
 
   @override
@@ -244,8 +222,6 @@ class _displaymessageState extends State<displaymessage> {
                         children: <Widget>[
                           new GestureDetector(
                             onTap: () {
-
-                              
                               // Update -> like message and display total count of like in profile
                             },
                             child: new Icon(
@@ -258,7 +234,7 @@ class _displaymessageState extends State<displaymessage> {
                             padding: new EdgeInsets.only(right: 3.0),
                           ),
                           new Text(
-                            '${likecount}',
+                            '${widget.data.likecount}',
                             style: new TextStyle(
                               color: Colors.white,
                             ),
@@ -278,7 +254,7 @@ class _displaymessageState extends State<displaymessage> {
                             ),
                           ),
                           new Text(
-                            '${commentlist.length}',
+                            '${widget.data.commentcount}',
                             style: new TextStyle(
                               color: Colors.white,
                             ),
@@ -415,7 +391,15 @@ class _displaymessageState extends State<displaymessage> {
                         submit_comment();
                         display_textbox = false;
                         Navigator.pop(context,MaterialPageRoute(builder: (context) => displaymessage()));
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => displaymessage()));
+                        sendMessageData newdata = new sendMessageData(widget.data.messagename,
+                          widget.data.messageimg,
+                          widget.data.message,
+                          widget.data.timestamp,
+                          widget.data.userid,
+                          widget.data.likecount,
+                          widget.data.commentcount+1
+                        );
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => displaymessage(data: newdata)));
                         setState(
                           () {
 
@@ -451,16 +435,9 @@ class _displaymessageState extends State<displaymessage> {
   Widget commentUI(String cmnt_name, String cmnt_image, String cmnt, var id, var time) {
     return GestureDetector(
       onTap: ()async{
-
-        if(id == null){
-          _snackbar();
-        }
-        else if(id != _userid){
-          await store.write(key:'friend-id', value: '$id');
-          await store.write(key: 'friend-name', value: '$cmnt_name');
-          await store.write(key: 'friend-image', value: '$cmnt_image');
-
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
+        if(id != _userid){
+          friendProfile fp = new friendProfile(id, cmnt_name, cmnt_image);
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile(data: fp)));
         }
         else if(id == _userid){
           Navigator.push(context, MaterialPageRoute(builder: (context)=>profile()));

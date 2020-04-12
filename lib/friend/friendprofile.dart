@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:firebaseapp/friend/friend_follower.dart';
 import 'package:firebaseapp/friend/friend_following.dart';
 import 'package:firebaseapp/friend/message_friend.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class friendprofile extends StatefulWidget {
   @override
+  final friendProfile data;
+  friendprofile({this.data});
   _friendprofileState createState() => _friendprofileState();
 }
 
@@ -21,6 +24,7 @@ class _friendprofileState extends State<friendprofile> {
   var _friendname;
   var _friendimageurl;
   var _friendid;
+
   var _userid;
   var _username;
   var _userimage;
@@ -35,8 +39,6 @@ class _friendprofileState extends State<friendprofile> {
   var _about;
   var _followertext = 'FOLLOW';
 
-
-
   final storage = new FlutterSecureStorage();
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
@@ -50,22 +52,18 @@ class _friendprofileState extends State<friendprofile> {
   }
 
   Future friendid() async{
-    String friend_id = await storage.read(key: 'friend-id');
-    String friend_image = await storage.read(key: 'friend-image');
-    String friend_name = await storage.read(key: 'friend-name');
+    String friend_id = widget.data.friendId;
+    String friend_image = widget.data.friendImg;
+    String friend_name = widget.data.friendName;
 
-        if(friend_id != null){
+    if(friend_id != null){
 
       //............................FOLLOWING COUNT OF USER.............................
 
       ref.child('user').child('$friend_id').child('following').once().then((DataSnapshot snap) async{
         var key = await snap.value.keys;
-
-        for(var following in key){
-          followingcount++;
-        }
         setState(() {
-          
+          this.followingcount = key.length;
         });
       });
 
@@ -73,12 +71,8 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('post').once().then((DataSnapshot snap) async{
         var key = await snap.value.keys;
-        for(var post in key){
-          postcount ++;
-        }
-
         setState(() {
-          
+          this.postcount = key.length;
         });
       });
 
@@ -86,12 +80,8 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('follower').once().then((DataSnapshot snap) async{
         var key = await snap.value.keys;
-        for(var post in key){
-          followercount++;
-        }
-
         setState(() {
-          
+          this.followercount = key.length;
         });
       });
 
@@ -99,7 +89,6 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('status').once().then((DataSnapshot snap) async{
         var statusvalue = await snap.value;
-
         setState(() {
           status = statusvalue;
         });
@@ -109,7 +98,6 @@ class _friendprofileState extends State<friendprofile> {
 
       ref.child('user').child('$friend_id').child('about').once().then((DataSnapshot snap) async{
         var about = await snap.value;
-
         setState(() {
           _about = about;
         });
@@ -164,7 +152,6 @@ class _friendprofileState extends State<friendprofile> {
 
   @override
   Widget build(BuildContext context) {
-    var _height = MediaQuery.of(context).padding.top;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Color.fromRGBO(64, 75, 96, .9),
