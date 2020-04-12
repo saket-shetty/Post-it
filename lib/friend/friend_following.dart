@@ -1,3 +1,4 @@
+import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:firebaseapp/friend/friendprofile.dart';
 import 'package:firebaseapp/user/profile.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class friendfollowing extends StatefulWidget {
+  var data;
+  friendfollowing({this.data});
   @override
   _friendfollowingState createState() => _friendfollowingState();
 }
@@ -30,7 +33,7 @@ class _friendfollowingState extends State<friendfollowing> {
   }
 
   Future get_user_id() async{
-    String friend_id = await storage.read(key: 'friend-id');
+    String friend_id = widget.data;
 
     setState(() {
         _userid = friend_id;
@@ -100,11 +103,8 @@ class _friendfollowingState extends State<friendfollowing> {
                   GestureDetector(
                     onTap: ()async{
                       if(key != _realuser){
-                        await storage.write(key: 'friend-id', value: '$key');
-                        await storage.write(key: 'friend-name', value: '$name');
-                        await storage.write(key: 'friend-image', value: '$image_url');
-
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
+                        friendProfile fp = new friendProfile(key, name, image_url);
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile(data: fp)));
                       }
                       else if( key == _realuser){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>profile()));

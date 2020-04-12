@@ -225,7 +225,7 @@ class _friendprofileState extends State<friendprofile> {
                     
                     GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendfollower()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendfollower(data: widget.data.friendId)));
                       },
                       child: new Column(
                         children: <Widget>[
@@ -243,7 +243,7 @@ class _friendprofileState extends State<friendprofile> {
 
                     new GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendfollowing()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>friendfollowing(data: widget.data.friendId)));
                       },
                       child: new Column(
                         mainAxisSize: MainAxisSize.max,
@@ -322,7 +322,12 @@ class _friendprofileState extends State<friendprofile> {
                       height: 40.0,
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend()));
+                          friendProfile fp = new friendProfile(
+                            widget.data.friendId,
+                            widget.data.friendName,
+                            widget.data.friendImg
+                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>message_friend(data: fp)));
                         },
                         child: Material(
                           borderRadius: BorderRadius.circular(10.0),

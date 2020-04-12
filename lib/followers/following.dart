@@ -5,6 +5,8 @@ import 'package:firebaseapp/data/myFollowing.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebaseapp/data/friendProfile.dart';
+
 
 class following extends StatefulWidget {
   @override
@@ -94,11 +96,17 @@ class _followingState extends State<following> {
                   
                   GestureDetector(
                     onTap: ()async{
-                      await storage.write(key: 'friend-id', value: '$key');
-                      await storage.write(key: 'friend-name', value: '$name');
-                      await storage.write(key: 'friend-image', value: '$image_url');
+                      // await storage.write(key: 'friend-id', value: '$key');
+                      // await storage.write(key: 'friend-name', value: '$name');
+                      // await storage.write(key: 'friend-image', value: '$image_url');
 
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile()));
+                      final friendProfile fp = new friendProfile(
+                        key,
+                        name,
+                        image_url
+                      );
+
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>friendprofile(data: fp)));
                     },
                     child: new Container(
                       width: 55,
