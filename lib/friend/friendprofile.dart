@@ -20,7 +20,6 @@ class _friendprofileState extends State<friendprofile> {
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-
   var _friendname;
   var _friendimageurl;
   var _friendid;
@@ -103,7 +102,9 @@ class _friendprofileState extends State<friendprofile> {
         });
       });
 
-      ref.child('user').child('$friend_id').child('follower').child('$_userid').once().then((DataSnapshot snap) async{
+      var newuserid = await storage.read(key: 'user-id');
+
+      ref.child('user').child('$friend_id').child('follower').child('$newuserid').once().then((DataSnapshot snap) async{
         var data = await snap.value;
         if(data != null){
           setState((){
@@ -111,7 +112,6 @@ class _friendprofileState extends State<friendprofile> {
           });
         }
       });
-
     }
 
     setState(() {
@@ -130,9 +130,9 @@ class _friendprofileState extends State<friendprofile> {
     String username = await storage.read(key:'user-name');
     String userimage = await storage.read(key:'user-image');
     setState((){
-      _userid = userid;
-      _username = username;
-      _userimage = userimage;
+      this._userid = userid;
+      this._username = username;
+      this._userimage = userimage;
     });
   }
 
@@ -262,7 +262,8 @@ class _friendprofileState extends State<friendprofile> {
 
                     new GestureDetector(
                       onTap: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => friendpost()));
+                        friendProfile fp = new friendProfile(widget.data.friendId, widget.data.friendName, widget.data.friendImg);
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => friendpost(data: fp)));
                       },
                       child: new Column(
                         children: <Widget>[

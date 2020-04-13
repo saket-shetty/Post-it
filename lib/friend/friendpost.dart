@@ -1,11 +1,14 @@
+import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:firebaseapp/user/userpostdata.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class friendpost extends StatefulWidget {
   @override
+  final friendProfile data;
+  friendpost({this.data});
   _friendpostState createState() => _friendpostState();
 }
 
@@ -23,7 +26,7 @@ class _friendpostState extends State<friendpost> {
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
-  final storage = new FlutterSecureStorage();
+  // final storage = new FlutterSecureStorage();
 
   void initState() {
 
@@ -36,9 +39,9 @@ class _friendpostState extends State<friendpost> {
   }
 
     Future friendid() async{
-    String friend_id = await storage.read(key: 'friend-id');
-    String friend_image = await storage.read(key: 'friend-image');
-    String friend_name = await storage.read(key: 'friend-name');
+    String friend_id = widget.data.friendId;
+    String friend_image = widget.data.friendImg;
+    String friend_name = widget.data.friendName;
 
     setState(() {
       _newname = friend_name;
