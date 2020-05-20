@@ -1,3 +1,4 @@
+import 'package:firebaseapp/components/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:firebaseapp/homepage/ShowDataPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'dart:convert' as JSON;
 import 'package:http/http.dart' as http;
+import 'components/buttonData.dart';
 
 void main() => runApp(
       new MaterialApp(
@@ -39,6 +41,7 @@ class _homepageState extends State<homepage> {
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
+  buttonData buttonValue;
 
   //Google login
   //login proved us with username, imageurl, token and user id
@@ -67,14 +70,13 @@ class _homepageState extends State<homepage> {
     read_token();
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => ShowDataPage()));
-
-
     ref.child('user').child(userid).child('imageurl').set(photourl);
     ref.child('user').child(userid).child('name').set(displayname);
 
     return null;
   }
 
+  //Facebook Login OAuth
   Future<FirebaseUser> _loginWithFB() async {
     FacebookLogin fbLogin = new FacebookLogin();
 
@@ -121,11 +123,10 @@ class _homepageState extends State<homepage> {
     await storage.write(key: 'valid_token', value: '$valid_token');
   }
 
-
   @override
   void initState() {
     // TODO: implement initStat
-    read_token(); 
+    read_token();
     super.initState();
   }
 
@@ -133,15 +134,14 @@ class _homepageState extends State<homepage> {
   // If token is present it will redirect to the homepage otherwise landing / login page
   Future read_token() async {
     String value = await storage.read(key: 'valid_token');
-        if (value != null) {
-
+    if (value != null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => ShowDataPage()));
     }
   }
 
-  FCM_token(var userid){
-      firebaseMessaging.configure(
+  FCM_token(var userid) {
+    firebaseMessaging.configure(
       onLaunch: (Map<String, dynamic> msg) {
         print(" onLaunch called ${(msg)}");
       },
@@ -194,91 +194,11 @@ class _homepageState extends State<homepage> {
                   new Image(
                     image: AssetImage('asset/mainlogo.png'),
                   ),
-                  new Container(
-                    width: 180,
-                    height: 50.0,
-                    child: new InkWell(
-                      onTap: () {
-                        _GooglesignIn();
-                      },
-                      child: Material(
-                        borderRadius: BorderRadius.circular(25.0),
-                        color: Colors.redAccent,
-                        shadowColor: Colors.redAccent.withOpacity(0.8),
-                        elevation: 7.0,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Icon(
-                                LineIcons.google,
-                                size: 25.0,
-                                color: Colors.white,
-                              ),
-                              new VerticalDivider(
-                                color: Colors.black,
-                                width: 22.0,
-                              ),
-                              new Text(
-                                'Google',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  loginButton(data: buttonValue = new buttonData('Google', Colors.redAccent, LineIcons.google, _GooglesignIn)),
                   new Padding(
                     padding: new EdgeInsets.all(8.0),
                   ),
-                  new Container(
-                    width: 180,
-                    height: 50.0,
-                    child: new InkWell(
-                      onTap: () {
-                        //  _Twitterlogin();
-                        _loginWithFB();
-                      },
-                      child: Material(
-                        borderRadius: BorderRadius.circular(25.0),
-                        color: Colors.lightBlue,
-                        shadowColor: Colors.lightBlue.withOpacity(0.8),
-                        elevation: 7.0,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Icon(
-                                LineIcons.facebook_square,
-                                size: 25.0,
-                                color: Colors.white,
-                              ),
-                              new VerticalDivider(
-                                color: Colors.black,
-                                width: 22.0,
-                              ),
-                              new Text(
-                                'Facebook',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.all(8.0),
-                  ),
+                  loginButton(data: buttonValue = new buttonData('Facebook', Colors.blue, LineIcons.facebook, _loginWithFB)),
                 ],
               ),
             ),

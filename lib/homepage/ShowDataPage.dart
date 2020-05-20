@@ -16,7 +16,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:flushbar/flushbar.dart';
 
 class ShowDataPage extends StatefulWidget {
   @override
@@ -92,22 +91,11 @@ class _ShowDataPageState extends State<ShowDataPage> {
         context, MaterialPageRoute(builder: (context) => displaymessage(data: sendData)));
   }
 
-  Future welcome_snackbar() async {
-    Flushbar(
-      title: "Hello",
-      message: "Welcome to Post it hope you like the app",
-      duration: Duration(seconds: 2),
-      isDismissible: true,
-    )..show(context);
-  }
-
   @override
   void initState() {
     get_user_detail();
     get_all_data();
     reportstatus();
-    welcome_snackbar();
-
     //retrieving data from firebase database
     //the data is stored using time so that we can sort the key and retrieve it in that format
     //snap.value will give the json format value and snap.value.key will give all the child/key the json contains.

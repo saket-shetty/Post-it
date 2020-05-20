@@ -128,8 +128,7 @@ class _profileState extends State<profile> {
   Widget build(BuildContext context) {
     var device_width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Color(0xFF44473E),
-
+      backgroundColor: Colors.deepPurpleAccent[200],
       appBar: new AppBar(
         actions: <Widget>[
           new IconButton(icon: Icon(Icons.edit), onPressed: (){
@@ -144,7 +143,6 @@ class _profileState extends State<profile> {
           style: new TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w300,
-
           ),
         ),
       ),
@@ -197,7 +195,7 @@ class _profileState extends State<profile> {
                             fontSize: 30.0,
                             fontWeight: FontWeight.w400,
                             fontFamily: 'Montserrat',
-                            color: Color(0xFFFD9D5C)  
+                            color: Colors.white,
                           ),
                       ),
                       SizedBox(height: 10.0),
