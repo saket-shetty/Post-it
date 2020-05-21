@@ -3,26 +3,17 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/homepage/ShowDataPage.dart';
 import 'package:time_machine/time_machine.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebaseapp/components/login_button.dart';
+import 'package:firebaseapp/components/buttonData.dart';
+import 'package:line_icons/line_icons.dart';
 
-
-class SubmitForm extends StatelessWidget {
+class SubmitForm extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      theme: new ThemeData(),
-      home: new FormPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class FormPage extends StatefulWidget {
-  @override
-  _FormPageState createState() => new _FormPageState();
+  _SubmitFormState createState() => new _SubmitFormState();
 }
 
 
-class _FormPageState extends State<FormPage> {
+class _SubmitFormState extends State<SubmitForm> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
 
@@ -34,6 +25,8 @@ class _FormPageState extends State<FormPage> {
   int reportcount = 0;
 
   final storage = new FlutterSecureStorage();
+
+  buttonData btnData;
 
   @override
   void initState() {
@@ -160,8 +153,7 @@ class _FormPageState extends State<FormPage> {
                   scrollPadding: const EdgeInsets.all(20.0),
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                   autofocus: true,
-                  decoration: new InputDecoration(
-                      hasFloatingPlaceholder: false, errorMaxLines: 3),
+                  decoration: new InputDecoration(errorMaxLines: 3),
                   maxLines: 20,
                   keyboardType: TextInputType.multiline,
                   validator: (val) =>
@@ -172,28 +164,7 @@ class _FormPageState extends State<FormPage> {
               new Padding(
                 padding: const EdgeInsets.only(top: 26.0),
               ),
-              new InkWell(
-                onTap: () {
-                  _submit();
-                },
-                child: Container(
-                  width: 150,
-                  height: 50.0,
-                  decoration: new BoxDecoration(
-                    color: Colors.deepPurpleAccent,
-                    borderRadius: new BorderRadius.circular(25.0),
-                  ),
-                  child: new Center(
-                    child: Text(
-                      'POST',
-                      style: new TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300),
-                    ),
-                  ),
-                ),
-              ),
+              loginButton(data: btnData = new buttonData('Submit', Colors.deepPurpleAccent, LineIcons.pencil, _submit)),
             ],
           ),
         ),
