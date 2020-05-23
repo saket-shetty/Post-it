@@ -1,6 +1,7 @@
 import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:firebaseapp/data/sendMessageData.dart';
 import 'package:firebaseapp/friend/message_friend.dart';
+import 'package:firebaseapp/homepage/SearchPage.dart';
 import 'package:firebaseapp/user/message_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -212,7 +213,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
   Future reportstatus() async {
     ref
         .child('user')
-        .child('550107170')
+        .child(_userid)
         .child('Report')
         .once()
         .then((DataSnapshot snap) async {
@@ -258,6 +259,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _onTapIndex,
+          type: BottomNavigationBarType.fixed,
           onTap: (int index) {
             setState(() {
               _onTapIndex = index;
@@ -268,10 +270,13 @@ class _ShowDataPageState extends State<ShowDataPage> {
                 setState(() {
                   _onTapIndex = 0;
                 });
-              } else if (index == 2) {
+              }
+              else if (index == 2){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>searchPage()));
+              } 
+              else if (index == 3) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => profile()));
-
                 setState(() {
                   _onTapIndex = 0;
                 });
@@ -286,6 +291,10 @@ class _ShowDataPageState extends State<ShowDataPage> {
             BottomNavigationBarItem(
               icon: new Icon(Icons.add),
               title: new Text('POST'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              title: Text('SEARCH'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
