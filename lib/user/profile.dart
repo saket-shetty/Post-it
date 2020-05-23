@@ -138,7 +138,7 @@ class _profileState extends State<profile> {
         ],
         centerTitle: true,
         backgroundColor: Colors.transparent,
-        title: new Text("PROFILE",
+        title: new Text("Profile",
         
           style: new TextStyle(
             fontSize: 18.0,

@@ -251,7 +251,7 @@ class _friendprofileState extends State<friendprofile> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         title: new Text(
-          "PROFILE",
+          "Profile",
           style: new TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w300,

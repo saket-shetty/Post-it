@@ -4,13 +4,19 @@
 
 <table>
   <tr>
-    <td><img src="material/login.jpeg" width="180" height="300"></td>
-     <td><img src="material/main.jpeg" width="180" height="300"></td>
-     <td><img src="material/message.jpeg" width="180" height="300"></td>
+    <td><img src="material/login.png" width="180" height="300"></td>
+     <td><img src="material/homepage.png" width="180" height="300"></td>
+     <td><img src="material/profile.png" width="180" height="300"></td>
   </tr>
+    <tr>
+     <td><img src="material/message.png" width="180" height="300"></td>
+     <td><img src="material/postdata.png" width="180" height="300"></td>
+     <td><img src="material/frndprofile.png" width="180" height="300"></td>
+   </tr>
   <tr>
-     <td><img src="material/profile.jpeg" width="180" height="300"></td>
-     <td><img src="material/chat.jpeg" width="180" height="300"></td>
+     <td><img src="material/post.png" width="180" height="300"></td>
+     <td><img src="material/search.png" width="180" height="300"></td>
+     <td><img src="material/update.png" width="180" height="300"></td>
    </tr>
 
 </table>
@@ -18,7 +24,9 @@
 Post it is a social media app which is made entirely with flutter and firebase.
 The user can login with both Google and Facebook.<br>
 
-And the user will get the notification if his/her post gets comments or anyone will send personal message to them. <br>
+The user will get the notification if his/her post gets comments or someone else post a new post or anyone will send personal message to them. <br>
+
+Search functionality is added, now user can search other user and can follow and message them. <br>
 
 It uses UTC(Universal Time Co-ordinate) to store and sort the data and the time cannot be manipulate or change by user.
 The app is made with MediaQuery so it can be run in any device without any UI issue.<br>

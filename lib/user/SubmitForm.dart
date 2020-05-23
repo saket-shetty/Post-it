@@ -121,7 +121,7 @@ class _SubmitFormState extends State<SubmitForm> {
         backgroundColor: Colors.deepPurpleAccent,
         centerTitle: true,
         title: Text(
-          'NEW POST',
+          'New Post',
           style: TextStyle(
             fontWeight: FontWeight.w300,
           ),
