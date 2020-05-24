@@ -150,48 +150,12 @@ class _message_friendState extends State<message_friend> {
     var currentime =
         hour.toString() + ":" + time.minute.toString() + ' ' + state;
 
-    ref
-        .child('user')
-        .child('$user_id')
-        .child('message')
-        .child('$friend_id')
-        .child('$timestamp')
-        .child('message')
-        .set('$_message');
-    ref
-        .child('user')
-        .child('$user_id')
-        .child('message')
-        .child('$friend_id')
-        .child('$timestamp')
-        .child('id')
-        .set('$user_id');
-    ref
-        .child('user')
-        .child('$user_id')
-        .child('message')
-        .child('$friend_id')
-        .child('$timestamp')
-        .child('time')
-        .set('$currentime');
-    ref
-        .child('user')
-        .child('$user_id')
-        .child('message')
-        .child('$friend_id')
-        .child('$timestamp')
-        .child('image')
-        .set('$user_profile');
-    ref
-        .child('user')
-        .child('$user_id')
-        .child('message')
-        .child('$friend_id')
-        .child('$timestamp')
-        .child('name')
-        .set('$user_name');
-    ref
-        .child('user')
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('message').set('$_message');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('id').set('$user_id');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('time').set('$currentime');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('image').set('$user_profile');
+    ref.child('user').child('$user_id').child('message').child('$friend_id').child('$timestamp').child('name').set('$user_name');
+    ref.child('user')
         .child('$user_id')
         .child('message')
         .child('$friend_id')
@@ -271,6 +235,15 @@ class _message_friendState extends State<message_friend> {
         .child('$timestamp')
         .child('friend-name')
         .set('$user_name');
+
+    ref
+        .child('user')
+        .child('$friend_id')
+        .child('message')
+        .child('$user_id')
+        .child('$timestamp')
+        .child('friendid')
+        .set('Dummy data');
   }
 
   @override
@@ -435,7 +408,7 @@ class _message_friendState extends State<message_friend> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
+        padding: const EdgeInsets.only(bottom:8.0),
         child: new Align(
           alignment: Alignment.centerLeft,
           child: Container(
@@ -451,33 +424,32 @@ class _message_friendState extends State<message_friend> {
               child: new Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  // new Text('$id'),
-                  new Text(
-                    '$time',
-                    style: new TextStyle(
-                      fontSize: 12,
+                  Flexible(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: new Text(
+                            '$msg',
+                            style: new TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white),
+                            maxLines: 4,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   new Padding(
                     padding: new EdgeInsets.all(5),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right:8.0),
-                    child: new Flexible(
-                      child: Column(
-                        children: <Widget>[
-                          new Text(
-                            '$msg',
-                            style: new TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                            maxLines: 4,
-                          ),
-                        ],
-                      ),
+                  new Text(
+                    '$time',
+                    style: new TextStyle(
+                      fontSize: 12,
                     ),
+                    maxLines: 4,
                   ),
                 ],
               ),
