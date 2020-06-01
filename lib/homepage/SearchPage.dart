@@ -26,11 +26,10 @@ class _searchPageState extends State<searchPage> {
     super.initState();
   }
 
-  database_UserData(){
-        db.child('user').once().then((DataSnapshot snap) {
+  database_UserData() {
+    db.child('user').once().then((DataSnapshot snap) {
       var newkey = snap.value.keys;
       var snapData = snap.value;
-      print(snapData);
       for (var x in newkey) {
         if (snapData[x]['name'] != null) {
           friendProfile data = new friendProfile(
@@ -68,56 +67,57 @@ class _searchPageState extends State<searchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        backgroundColor: Colors.deepPurpleAccent,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Search',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-        ),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Container(
-                width: MediaQuery.of(context).size.width - 50,
-                height: 40.0,
-                child: new TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  controller: searchController,
-                  style: new TextStyle(
-                    fontSize: 18.0,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0)),
+          new Container(
+            height: MediaQuery.of(context).padding.top,
+            color: Colors.deepPurpleAccent,
+          ),
+          new Container(
+            color: Colors.deepPurpleAccent,
+            width: MediaQuery.of(context).size.width,
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Container(
+                  width: MediaQuery.of(context).size.width - 50,
+                  height: 40.0,
+                  child: new TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: searchController,
+                    style: new TextStyle(
+                      fontSize: 18.0,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    ),
                   ),
                 ),
-              ),
-              new IconButton(
-                icon: new Icon(
-                  Icons.search,
-                  size: 30.0,
-                ),
-                onPressed: searchFunction,
-                color: Colors.deepPurpleAccent,
-              )
-            ],
+                new IconButton(
+                  icon: new Icon(
+                    Icons.search,
+                    size: 30.0,
+                  ),
+                  onPressed: searchFunction,
+                )
+              ],
+            ),
           ),
           new Expanded(
-            child: new ListView.builder(
-              shrinkWrap: true,
-              itemCount: searchList.length,
-              itemBuilder: (_, i) {
-                return UIFollower(searchList[i].friendId,
-                    searchList[i].friendName, searchList[i].friendImg);
-              },
+            child: MediaQuery.removePadding(
+              removeTop: true,
+              context: (context),
+              child: new ListView.builder(
+                shrinkWrap: true,
+                itemCount: searchList.length,
+                itemBuilder: (_, i) {
+                  return UIFollower(searchList[i].friendId,
+                      searchList[i].friendName, searchList[i].friendImg);
+                },
+              ),
             ),
           ),
         ],
