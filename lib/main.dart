@@ -68,11 +68,22 @@ class _homepageState extends State<homepage> {
 
     store_token(token);
     read_token();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+
     ref.child('user').child(userid).child('imageurl').set(photourl);
     ref.child('user').child(userid).child('name').set(displayname);
-
+    var flag = false;
+    ref.child('user').once().then((DataSnapshot snap){
+      for(var id in snap.value.keys){
+        if(id.toString()==userid.toString()){
+          flag = true;
+        }
+      }
+    });
+    if(!flag){
+      ref.child('newuser').set(displayname);
+    }
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ShowDataPage()));
     return null;
   }
 
@@ -99,6 +110,22 @@ class _homepageState extends State<homepage> {
 
         //The json will be decoded here
         final profile = JSON.jsonDecode(graphResponse.body);
+        ref.child('user').child(profile['id']).child('imageurl').set(profile['picture']['data']['url']);
+        ref.child('user').child(profile['id']).child('name').set(profile['name']);
+        ref.child('newuser').set(profile['name']);
+
+        var flag = false;
+        ref.child('user').once().then((DataSnapshot snap){
+          for(var id in snap.value.keys){
+            if(id.toString()==profile['id'].toString()){
+              flag = true;
+            }
+          }
+        });
+        if(!flag){
+          ref.child('newuser').set(profile['name']);
+        }
+
 
         store_user_detail(
             profile['id'], profile['picture']['data']['url'], profile['name']);

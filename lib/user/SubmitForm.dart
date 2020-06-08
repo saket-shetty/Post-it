@@ -8,6 +8,8 @@ import 'package:firebaseapp/components/buttonData.dart';
 import 'package:line_icons/line_icons.dart';
 
 class SubmitForm extends StatefulWidget {
+  final int data;
+  SubmitForm({this.data});
   @override
   _SubmitFormState createState() => new _SubmitFormState();
 }
@@ -18,6 +20,7 @@ class _SubmitFormState extends State<SubmitForm> {
   final formKey = new GlobalKey<FormState>();
 
   String _newname, _newurl, _newemail, _userid;
+  var timediff;
 
   static DatabaseReference ref = FirebaseDatabase.instance.reference();
   String _message;
@@ -33,6 +36,7 @@ class _SubmitFormState extends State<SubmitForm> {
     // TODO: implement initState
     get_user_detail();
     get_report_status();
+    print(this.widget.data);
     super.initState();
   }
 
@@ -56,7 +60,7 @@ class _SubmitFormState extends State<SubmitForm> {
     });
   }
 
-  void _submit() {
+  _submit() async{
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
@@ -64,7 +68,7 @@ class _SubmitFormState extends State<SubmitForm> {
     }
   }
 
-  void submitmessage() {
+  submitmessage() async{
     var now = Instant.now();
     var time = now.toString('yyyyMMddHHmmss');
 
@@ -78,7 +82,9 @@ class _SubmitFormState extends State<SubmitForm> {
         ':' +
         date_year.toString();
 
-    if (_newname.isNotEmpty && _message.isNotEmpty != null && report_status != 'true') {
+    timediff = int.parse(time) - this.widget.data;
+
+    if (_newname.isNotEmpty && _message.isNotEmpty && report_status != 'true' && timediff > 500) {
       ref.child('node-name').child('$time').child('name').set('$_newname');
       ref.child('node-name').child('$time').child('message').set('$_message');
       ref.child('node-name').child('$time').child('msgtime').set('$date');
@@ -91,6 +97,7 @@ class _SubmitFormState extends State<SubmitForm> {
       ref.child('user').child('$_userid').child('post').child('$time').child('msgtime').set('$date');
       ref.child('user').child('$_userid').child('name').set('$_newname');
       ref.child('user').child('$_userid').child('imageurl').set('$_newurl');
+      ref.child('user').child('$_userid').child('lastPostTimestamp').set('$time');
       ref.child('notification').child('name').set('$_newname');
       ref.child('notification').child('message').set('$_message');
 
@@ -99,6 +106,9 @@ class _SubmitFormState extends State<SubmitForm> {
           context, MaterialPageRoute(builder: (context) => ShowDataPage()));
     } else if (report_status == 'true') {
       _snackbar();
+    }else{
+      print("you have to wait 5 min to post another post");
+      _waitSnackbar();
     }
   }
 
@@ -107,6 +117,15 @@ class _SubmitFormState extends State<SubmitForm> {
       content: new Text('You have been reported'),
       duration: new Duration(milliseconds: 2000),
       backgroundColor: Colors.red,
+    );
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+    _waitSnackbar() {
+    final snackbar = new SnackBar(
+      content: new Text('You have to wait 5 min to post another post'),
+      duration: new Duration(milliseconds: 5000),
+      backgroundColor: Colors.deepPurpleAccent,
     );
     scaffoldKey.currentState.showSnackBar(snackbar);
   }

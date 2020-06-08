@@ -64,14 +64,27 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
   Color _likecolor;
 
+  int lastPostTime;
+
   Future get_user_detail() async {
     String userimage = await storage.read(key: 'user-image');
     String username = await storage.read(key: 'user-name');
     String userid = await storage.read(key: 'user-id');
+    ref.child('user').child('$userid').child('lastPostTimestamp').once().then((DataSnapshot snap){
+      setState((){
+        if(snap.value == null){
+          lastPostTime = 0;
+        }else{
+          print('Data :${snap.value}');
+          lastPostTime = int.parse(snap.value);
+        }
+
+      });
+    });
     setState(() {
       _userimage = userimage;
       _newname = username;
-      _userid = userid;
+      this._userid = userid;
     });
   }
 
@@ -265,7 +278,7 @@ class _ShowDataPageState extends State<ShowDataPage> {
               _onTapIndex = index;
               if (index == 1) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SubmitForm()));
+                    MaterialPageRoute(builder: (context) => SubmitForm(data: lastPostTime)));
 
                 setState(() {
                   _onTapIndex = 0;
