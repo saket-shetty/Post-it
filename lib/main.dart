@@ -106,17 +106,21 @@ class _homepageState extends State<homepage> {
         //The json will be decoded here
         final profile = JSON.jsonDecode(graphResponse.body);
 
-        ref.child('user').child(profile['id']).once().then((DataSnapshot snap){
+        var userid = profile['id'];
+        var username = profile['name'];
+        var userimage = profile['picture']['data']['url'];
+
+        ref.child('user').child(userid).once().then((DataSnapshot snap){
           var data = snap.value;
           if(data == null){
-            ref.child('newuser').set(profile['name']);
-            post_UserData(profile['id'], profile['name'], profile['picture']['data']['url']);
+            ref.child('newuser').set(username);
+            post_UserData(userid, username, userimage);
           }
           else{
-            post_UserData(profile['id'], profile['name'], profile['picture']['data']['url']);
+            post_UserData(userid, username, userimage);
           }
         });
-        store_user_detail(profile['id'], profile['picture']['data']['url'], profile['name']);
+        store_user_detail(userid, userimage, username);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShowDataPage()));
         break;
