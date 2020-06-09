@@ -64,24 +64,19 @@ class _homepageState extends State<homepage> {
 
     store_user_detail(userid, photourl, displayname);
 
-    FCM_token(userid);
-
     store_token(token);
     read_token();
 
-    ref.child('user').child(userid).child('imageurl').set(photourl);
-    ref.child('user').child(userid).child('name').set(displayname);
-    var flag = false;
-    ref.child('user').once().then((DataSnapshot snap){
-      for(var id in snap.value.keys){
-        if(id.toString()==userid.toString()){
-          flag = true;
-        }
+    ref.child('user').child(userid).once().then((DataSnapshot snap){
+      var data = snap.value;
+      print("User data :${data}");
+      if(data == null){
+        ref.child('newuser').set(displayname);
+        post_UserData(userid, displayname, photourl);
+      }else{
+        post_UserData(userid, displayname, photourl);
       }
     });
-    if(!flag){
-      ref.child('newuser').set(displayname);
-    }
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => ShowDataPage()));
     return null;
@@ -110,40 +105,34 @@ class _homepageState extends State<homepage> {
 
         //The json will be decoded here
         final profile = JSON.jsonDecode(graphResponse.body);
-        ref.child('user').child(profile['id']).child('imageurl').set(profile['picture']['data']['url']);
-        ref.child('user').child(profile['id']).child('name').set(profile['name']);
-        ref.child('newuser').set(profile['name']);
 
-        var flag = false;
-        ref.child('user').once().then((DataSnapshot snap){
-          for(var id in snap.value.keys){
-            if(id.toString()==profile['id'].toString()){
-              flag = true;
-            }
+        ref.child('user').child(profile['id']).once().then((DataSnapshot snap){
+          var data = snap.value;
+          if(data == null){
+            ref.child('newuser').set(profile['name']);
+            post_UserData(profile['id'], profile['name'], profile['picture']['data']['url']);
+          }
+          else{
+            post_UserData(profile['id'], profile['name'], profile['picture']['data']['url']);
           }
         });
-        if(!flag){
-          ref.child('newuser').set(profile['name']);
-        }
-
-
-        store_user_detail(
-            profile['id'], profile['picture']['data']['url'], profile['name']);
-
-        FCM_token(profile['id']);
-
+        store_user_detail(profile['id'], profile['picture']['data']['url'], profile['name']);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => ShowDataPage()));
         break;
-
       case FacebookLoginStatus.cancelledByUser:
         print('some error');
         break;
-
       case FacebookLoginStatus.error:
         print('some error');
         break;
     }
+  }
+
+  void post_UserData(var userid, var username, var userimage){
+    ref.child('user').child(userid).child('imageurl').set(userimage);
+    ref.child('user').child(userid).child('name').set(username);
+    FCM_token(userid);
   }
 
   Future store_token(String valid_token) async {
