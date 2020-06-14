@@ -2,9 +2,9 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
-exports.postNotification = functions.database.ref('node-name/{timestamp}').onCreate(evt => {
+exports.postNotification = functions.database.ref('node-name/{timestamp}').onWrite(evt => {
     var send = false;
-    var newdata = evt._data;
+    var newdata = evt.after._data;
     if(newdata.userid!=null && newdata.name != null && newdata.msgtime!=null && 
         newdata.message!=null && newdata.image!=null && newdata.comments !=null && newdata.likes != null){
         send = true;
@@ -44,7 +44,7 @@ exports.message = functions.database.ref('user/{user-id}/message/{friend-id}/{ti
         }
     };
 
-    if(FriendId != 404){
+    if(FriendId != 404 && FriendId != "Dummy data"){
         return admin.database().ref('user/'+FriendId+'/fcm-token').on('value', (token)=>{
             console.log("code token :", token.val());
             return admin.messaging().sendToDevice(token.val(), payload);
@@ -53,6 +53,7 @@ exports.message = functions.database.ref('user/{user-id}/message/{friend-id}/{ti
 });
 
 exports.comment = functions.database.ref('node-name/{timestamp}/comments/{msgtimestamp}').onWrite(evt =>{
+
     var userid = 404;
     if(evt.after._data.comment != null && evt.after._data.id != null != null && evt.after._data.name != null && evt.after._data.postid != null){
         userid = evt.after._data.postid;
@@ -77,18 +78,18 @@ exports.comment = functions.database.ref('node-name/{timestamp}/comments/{msgtim
 });
 
 
-exports.newuser = functions.database.ref('user/{time}').onCreate(evt => {
+exports.newuser = functions.database.ref('newuser').onWrite(evt => {
     var send = false;
-    console.log("Data :",evt._data);
+    console.log("Data :",evt.after._data);
 
-    if(evt._data.name != null && evt._data.imageurl != null){
+    if(evt.after._data != null){
         send = true;
     }
 
     const payload = {
         notification:{
             title : "New user joined Post-it",
-            body : "Say hi to "+evt._data.name,
+            body : "Say hi to "+evt.after._data,
             badge : '1',
             sound : 'default'
         }
