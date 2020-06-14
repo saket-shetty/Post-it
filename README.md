@@ -42,12 +42,3 @@ If user logs in successfully a session is been created.<br>
 Now in this new update the user can also report other user if they misbehave and that user will not be able to post unless admin allows them and user will only see the 10 recently added posts and not every data of database as previous.<br>
 
 Any Query contact: shettysaket05@gmail.com
-
-# firebaseapp
-
-A new Flutter application.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
