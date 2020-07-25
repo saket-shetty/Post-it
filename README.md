@@ -21,6 +21,8 @@
 
 </table>
 
+Please replace my googleservice.json with yours.
+
 Post it is a social media app which is made entirely with flutter and firebase.
 The user can login with both Google and Facebook.<br>
 
