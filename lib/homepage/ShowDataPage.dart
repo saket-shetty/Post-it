@@ -42,8 +42,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
   DatabaseReference ref = FirebaseDatabase.instance.reference();
 
-  static var time = new DateTime.now().millisecondsSinceEpoch;
-
   var _onTapIndex = 0;
 
   List<String> timestamplist = [];
@@ -70,15 +68,19 @@ class _ShowDataPageState extends State<ShowDataPage> {
     String userimage = await storage.read(key: 'user-image');
     String username = await storage.read(key: 'user-name');
     String userid = await storage.read(key: 'user-id');
-    ref.child('user').child('$userid').child('lastPostTimestamp').once().then((DataSnapshot snap){
-      setState((){
-        if(snap.value == null){
+    ref
+        .child('user')
+        .child('$userid')
+        .child('lastPostTimestamp')
+        .once()
+        .then((DataSnapshot snap) {
+      setState(() {
+        if (snap.value == null) {
           lastPostTime = 0;
-        }else{
+        } else {
           print('Data :${snap.value}');
           lastPostTime = int.parse(snap.value);
         }
-
       });
     });
     setState(() {
@@ -88,21 +90,16 @@ class _ShowDataPageState extends State<ShowDataPage> {
     });
   }
 
-  Future send_message_data(
-      String message_name, msg_image, msg, timestamp, userid,likecount, cmntcount) async {
-      sendMessageData sendData = new sendMessageData(
-        message_name,
-        msg_image,
-        msg,
-        timestamp,
-        userid,
-        likecount,
-        cmntcount
-      );
+  Future send_message_data(String message_name, msg_image, msg, timestamp,
+      userid, likecount, cmntcount) async {
+    sendMessageData sendData = new sendMessageData(
+        message_name, msg_image, msg, timestamp, userid, likecount, cmntcount);
 
     setState(() {});
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => displaymessage(data: sendData)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => displaymessage(data: sendData)));
   }
 
   @override
@@ -134,7 +131,12 @@ class _ShowDataPageState extends State<ShowDataPage> {
         //counting the number of comment the post got.
         //so that the user will get to know the amount of comments that his/her post got
 
-        ref.child('node-name').child('$newlist').child('comments').once().then((DataSnapshot datasnap) {
+        ref
+            .child('node-name')
+            .child('$newlist')
+            .child('comments')
+            .once()
+            .then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
           count = key.length - 1;
           countofcomment.add(count);
@@ -144,7 +146,12 @@ class _ShowDataPageState extends State<ShowDataPage> {
         //counting the number of likes the post got.
         //so that the user will get to know the amount of likes that his/her post got
 
-        ref.child('node-name').child('$newlist').child('likes').once().then((DataSnapshot datasnap) {
+        ref
+            .child('node-name')
+            .child('$newlist')
+            .child('likes')
+            .once()
+            .then((DataSnapshot datasnap) {
           var key = datasnap.value.keys;
           likecount = key.length - 1;
           countoflikes.add(likecount);
@@ -153,7 +160,13 @@ class _ShowDataPageState extends State<ShowDataPage> {
 
         timestamplist.add(newlist);
 
-        ref.child('node-name').child('$newlist').child('likes').child('$_userid').once().then((DataSnapshot snap) async {
+        ref
+            .child('node-name')
+            .child('$newlist')
+            .child('likes')
+            .child('$_userid')
+            .once()
+            .then((DataSnapshot snap) async {
           await _userid;
           var snapdata = snap.value;
           if (snapdata != null) {
@@ -277,17 +290,18 @@ class _ShowDataPageState extends State<ShowDataPage> {
             setState(() {
               _onTapIndex = index;
               if (index == 1) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SubmitForm(data: lastPostTime)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SubmitForm(data: lastPostTime)));
 
                 setState(() {
                   _onTapIndex = 0;
                 });
-              }
-              else if (index == 2){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>searchPage()));
-              } 
-              else if (index == 3) {
+              } else if (index == 2) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => searchPage()));
+              } else if (index == 3) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => profile()));
                 setState(() {
@@ -362,7 +376,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
     return new InkWell(
         onTap: () {
           sharemessage = message;
-          send_message_data(name, image, message, timestamp, userid, likecount, cmntcount);
+          send_message_data(
+              name, image, message, timestamp, userid, likecount, cmntcount);
         },
         child: Container(
           margin: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
@@ -373,10 +388,73 @@ class _ShowDataPageState extends State<ShowDataPage> {
                 actionExtentRatio: 0.25,
                 child: new Card(
                   child: new Container(
-                    color: Color(color_value[Random().nextInt(5)]),
-                    padding: new EdgeInsets.all(20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: new BorderRadius.all(Radius.circular(10.0)),
+                      color: Color(color_value[Random().nextInt(5)]),
+                    ),
+                    padding: new EdgeInsets.only(top:10.0, bottom: 20.0, left: 10.0, right: 10.0),
                     child: new Column(
                       children: <Widget>[
+
+                        new Row(
+                          children: <Widget>[
+                            new InkWell(
+                              onTap: () {
+                                // comparing the userid to check whether the userid is of the corrent user or the other user
+                                // if the userid is of the current user show the user's profile
+                                // if the userid is not of the current user show the profile of that user
+
+                                if (_userid == userid) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => profile()));
+                                } else {
+                                  friendProfile fp =
+                                      new friendProfile(userid, name, image);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              friendprofile(data: fp)));
+                                }
+                              },
+                              child: new Container(
+                                width: 40.0,
+                                height: 40.0,
+                                //margin: EdgeInsets.only(top: 30.0),
+                                decoration: new BoxDecoration(
+                                  border: Border.all(
+                                    width: 1.5,
+                                    color: Colors.white,
+                                  ),
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: new CachedNetworkImageProvider(
+                                        '$image'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            new Padding(
+                              padding: EdgeInsets.only(right: 10.0),
+                            ),
+                            new Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                new Text(
+                                  '$name',
+                                  style: new TextStyle(color: Colors.white),
+                                ),
+                                new Text(
+                                  '$datetime',
+                                  style: new TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                         new Text(
                           '$message',
                           maxLines: 5,
@@ -449,8 +527,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
                             new GestureDetector(
                               onTap: () {
                                 sharemessage = message;
-                                send_message_data(
-                                    name, image, message, timestamp, userid, likecount, cmntcount);
+                                send_message_data(name, image, message,
+                                    timestamp, userid, likecount, cmntcount);
                               },
                               child: Row(
                                 children: <Widget>[
@@ -514,68 +592,19 @@ class _ShowDataPageState extends State<ShowDataPage> {
                       color: Colors.deepOrangeAccent,
                       onTap: () async {
                         if (userid != _userid) {
-                              friendProfile fp = new friendProfile(userid, name, image);
+                          friendProfile fp =
+                              new friendProfile(userid, name, image);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => message_friend(data: fp)));
+                                  builder: (context) =>
+                                      message_friend(data: fp)));
                         } else if (userid == _userid) {
                           _same_user();
                         }
                       },
                     ),
                   )
-                ],
-              ),
-              new Row(
-                children: <Widget>[
-                  new Padding(
-                    padding: EdgeInsets.all(10.0),
-                  ),
-                  new InkWell(
-                    onTap: () {
-                      // comparing the userid to check whether the userid is of the corrent user or the other user
-                      // if the userid is of the current user show the user's profile
-                      // if the userid is not of the current user show the profile of that user
-
-                      if (_userid == userid) {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => profile()));
-                      } else {
-                        friendProfile fp = new friendProfile(userid, name, image);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => friendprofile(data: fp)));
-                      }
-                    },
-                    child: new Container(
-                      width: 40.0,
-                      height: 40.0,
-                      //margin: EdgeInsets.only(top: 30.0),
-                      decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: new DecorationImage(
-                          fit: BoxFit.fill,
-                          image: new CachedNetworkImageProvider('$image'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  new Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                  ),
-                  new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(
-                        '$name',
-                      ),
-                      new Text(
-                        '$datetime',
-                      ),
-                    ],
-                  ),
                 ],
               ),
               new Padding(

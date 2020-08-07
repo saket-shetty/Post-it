@@ -147,9 +147,7 @@ class _profileState extends State<profile> {
         ),
       ),
 
-      body:
-      
-       Column(
+      body:Column(
          children: <Widget>[
           // new Padding(padding: new EdgeInsets.all(5),),
           Align(

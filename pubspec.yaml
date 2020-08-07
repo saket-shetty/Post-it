@@ -29,6 +29,7 @@ dev_dependencies:
   flutter_secure_storage: ^3.3.1+1
   firebase_messaging: ^6.0.12
   flutter_facebook_login: ^3.0.0
+  characters: ^1.0.0
 
 
 flutter_icons:
