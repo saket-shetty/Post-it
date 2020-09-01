@@ -1,11 +1,12 @@
+import 'package:firebaseapp/data/SubmitFormData.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebaseapp/homepage/ShowDataPage.dart';
 import 'package:time_machine/time_machine.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebaseapp/components/login_button.dart';
 import 'package:firebaseapp/components/buttonData.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:firebaseapp/homepage/SelectPostCategories.dart';
 
 class SubmitForm extends StatefulWidget {
   final int data;
@@ -13,7 +14,6 @@ class SubmitForm extends StatefulWidget {
   @override
   _SubmitFormState createState() => new _SubmitFormState();
 }
-
 
 class _SubmitFormState extends State<SubmitForm> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -36,31 +36,28 @@ class _SubmitFormState extends State<SubmitForm> {
     // TODO: implement initState
     get_user_detail();
     get_report_status();
-    print(this.widget.data);
     super.initState();
   }
 
-  Future get_user_detail() async{
+  Future get_user_detail() async {
     String userid = await storage.read(key: 'user-id');
     String username = await storage.read(key: 'user-name');
     String userimage = await storage.read(key: 'user-image');
 
     setState(() {
-     _newname = username;
-     _newurl = userimage;
-     _userid = userid;
+      _newname = username;
+      _newurl = userimage;
+      _userid = userid;
     });
   }
 
-  Future get_report_status() async{
+  Future get_report_status() async {
     report_status = await storage.read(key: 'report-status');
-    
-    setState(() {
-      
-    });
+
+    setState(() {});
   }
 
-  _submit() async{
+  _submit() async {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
@@ -68,7 +65,7 @@ class _SubmitFormState extends State<SubmitForm> {
     }
   }
 
-  submitmessage() async{
+  submitmessage() async {
     var now = Instant.now();
     var time = now.toString('yyyyMMddHHmmss');
 
@@ -84,30 +81,19 @@ class _SubmitFormState extends State<SubmitForm> {
 
     timediff = int.parse(time) - this.widget.data;
 
-    if (_newname.isNotEmpty && _message.isNotEmpty && report_status != 'true' && timediff > 500) {
-      ref.child('node-name').child('$time').child('name').set('$_newname');
-      ref.child('node-name').child('$time').child('message').set('$_message');
-      ref.child('node-name').child('$time').child('msgtime').set('$date');
-      ref.child('node-name').child('$time').child('image').set('$_newurl');
-      ref.child('node-name').child('$time').child('email').set('$_newemail');
-      ref.child('node-name').child('$time').child('userid').set('$_userid');
-      ref.child('node-name').child('$time').child('comments').child('no-comments').set('1');
-      ref.child('node-name').child('$time').child('likes').child('no-likes').set('1');
-      ref.child('user').child('$_userid').child('post').child('$time').child('message').set('$_message');
-      ref.child('user').child('$_userid').child('post').child('$time').child('msgtime').set('$date');
-      ref.child('user').child('$_userid').child('name').set('$_newname');
-      ref.child('user').child('$_userid').child('imageurl').set('$_newurl');
-      ref.child('user').child('$_userid').child('lastPostTimestamp').set('$time');
-      ref.child('notification').child('name').set('$_newname');
-      ref.child('notification').child('message').set('$_message');
-
-      Navigator.of(context).pop();
+    if (_newname.isNotEmpty &&
+        _message.isNotEmpty &&
+        report_status != 'true' &&
+        timediff > 500) {
+      SendFormData formData = new SendFormData(
+          time, _userid, _newname, _message, date, _newurl, _newemail);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => selectPostCategories(data: formData)));
     } else if (report_status == 'true') {
       _snackbar();
-    }else{
-      print("you have to wait 5 min to post another post");
+    } else {
       _waitSnackbar();
     }
   }
@@ -121,7 +107,7 @@ class _SubmitFormState extends State<SubmitForm> {
     scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
-    _waitSnackbar() {
+  _waitSnackbar() {
     final snackbar = new SnackBar(
       content: new Text('You have to wait 5 min to post another post'),
       duration: new Duration(milliseconds: 5000),
@@ -183,7 +169,9 @@ class _SubmitFormState extends State<SubmitForm> {
               new Padding(
                 padding: const EdgeInsets.only(top: 26.0),
               ),
-              loginButton(data: btnData = new buttonData('Submit', Colors.deepPurpleAccent, LineIcons.pencil, _submit)),
+              loginButton(
+                  data: btnData = new buttonData('Submit',
+                      Colors.deepPurpleAccent, LineIcons.pencil, _submit)),
             ],
           ),
         ),

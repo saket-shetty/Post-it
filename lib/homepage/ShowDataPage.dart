@@ -2,7 +2,7 @@ import 'package:firebaseapp/data/friendProfile.dart';
 import 'package:firebaseapp/data/sendMessageData.dart';
 import 'package:firebaseapp/friend/message_friend.dart';
 import 'package:firebaseapp/homepage/SearchPage.dart';
-import 'package:firebaseapp/user/message_page.dart';
+import 'package:firebaseapp/homepage/allPostDataPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebaseapp/data/myData.dart';
@@ -78,7 +78,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
         if (snap.value == null) {
           lastPostTime = 0;
         } else {
-          print('Data :${snap.value}');
           lastPostTime = int.parse(snap.value);
         }
       });
@@ -178,13 +177,13 @@ class _ShowDataPageState extends State<ShowDataPage> {
           }
           setState(() {});
         });
-
         myData d = new myData(
             data[newlist]['name'],
             data[newlist]['message'],
             data[newlist]['msgtime'],
             data[newlist]['image'],
-            data[newlist]['userid']);
+            data[newlist]['userid'],
+            data[newlist]['category']);
         allData.add(d);
       }
       setState(() {});
@@ -262,27 +261,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
-        appBar: new AppBar(
-          backgroundColor: Colors.deepPurpleAccent,
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Post it',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-          ),
-          actions: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => message_page()));
-              },
-              child: Icon(
-                Icons.message,
-              ),
-            ),
-            new Padding(padding: new EdgeInsets.only(right: 10.0)),
-          ],
-        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _onTapIndex,
           type: BottomNavigationBarType.fixed,
@@ -343,6 +321,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
                   )
                 : new ListView.builder(
                     itemCount: allData.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
                     itemBuilder: (_, index) {
                       return UI(
                           allData[index].name,
@@ -353,7 +333,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
                           countofcomment[index],
                           allData[index].userid,
                           countoflikes[index],
-                          likecolorlist[index]);
+                          likecolorlist[index],
+                          allData[index].category);
                     },
                   ),
           ),
@@ -372,7 +353,8 @@ class _ShowDataPageState extends State<ShowDataPage> {
       int cmntcount,
       String userid,
       int likecount,
-      int likecolor) {
+      int likecolor,
+      List category) {
     return new InkWell(
         onTap: () {
           sharemessage = message;
@@ -392,10 +374,10 @@ class _ShowDataPageState extends State<ShowDataPage> {
                       borderRadius: new BorderRadius.all(Radius.circular(10.0)),
                       color: Color(color_value[Random().nextInt(5)]),
                     ),
-                    padding: new EdgeInsets.only(top:10.0, bottom: 20.0, left: 10.0, right: 10.0),
+                    padding: new EdgeInsets.only(
+                        top: 10.0, bottom: 20.0, left: 10.0, right: 10.0),
                     child: new Column(
                       children: <Widget>[
-
                         new Row(
                           children: <Widget>[
                             new InkWell(
@@ -403,7 +385,6 @@ class _ShowDataPageState extends State<ShowDataPage> {
                                 // comparing the userid to check whether the userid is of the corrent user or the other user
                                 // if the userid is of the current user show the user's profile
                                 // if the userid is not of the current user show the profile of that user
-
                                 if (_userid == userid) {
                                   Navigator.push(
                                       context,
@@ -453,6 +434,38 @@ class _ShowDataPageState extends State<ShowDataPage> {
                                 ),
                               ],
                             ),
+                            new Expanded(
+                              child: new Container(),
+                            ),
+                            category != null
+                                ?new Column(
+                                  children: [
+                                    for(var i in category)
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom:3.0),
+                                        child: new Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.deepPurpleAccent,
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(20))),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0,
+                                                right: 8.0,
+                                                top: 2.0,
+                                                bottom: 2.0),
+                                            child: new Text(
+                                              '${i.toString()}',
+                                              style: TextStyle(color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                )
+                                : new Container(),
                           ],
                         ),
                         new Text(
@@ -619,13 +632,11 @@ class _ShowDataPageState extends State<ShowDataPage> {
     await new Future.delayed(new Duration(seconds: 1));
     setState(() {
       Navigator.pop(
-          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+          context, MaterialPageRoute(builder: (context) => allPostDataPage()));
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+          context, MaterialPageRoute(builder: (context) => allPostDataPage()));
     });
     return null;
   }
 }
-
-// building shredpref to store and share data with display_message.dart
 //end

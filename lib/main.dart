@@ -1,6 +1,6 @@
 import 'package:firebaseapp/components/login_button.dart';
+import 'package:firebaseapp/homepage/category.dart';
 import 'package:flutter/material.dart';
-import 'package:firebaseapp/homepage/ShowDataPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -69,7 +69,6 @@ class _homepageState extends State<homepage> {
 
     ref.child('user').child(userid).once().then((DataSnapshot snap){
       var data = snap.value;
-      print("User data :${data}");
       if(data == null){
         ref.child('newuser').set(displayname);
         post_UserData(userid, displayname, photourl);
@@ -78,7 +77,7 @@ class _homepageState extends State<homepage> {
       }
     });
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+        context, MaterialPageRoute(builder: (context) => Category()));
     return null;
   }
 
@@ -88,7 +87,6 @@ class _homepageState extends State<homepage> {
 
     // Open facebook page so that user can login
     final result = await fbLogin.logIn(['email', 'public_profile']);
-
     switch (result.status) {
 
       //If user successfully loggedin the user data will be returned
@@ -97,7 +95,6 @@ class _homepageState extends State<homepage> {
         //user token will be returned here
         final token = result.accessToken.token;
 
-        store_token(token);
 
         //The returned token will be accessed here to get the user data into json format
         final graphResponse = await http.get(
@@ -105,10 +102,13 @@ class _homepageState extends State<homepage> {
 
         //The json will be decoded here
         final profile = JSON.jsonDecode(graphResponse.body);
-
         var userid = profile['id'];
         var username = profile['name'];
         var userimage = profile['picture']['data']['url'];
+
+        store_user_detail(userid, userimage, username);
+        store_token(token);
+        read_token();
 
         ref.child('user').child(userid).once().then((DataSnapshot snap){
           var data = snap.value;
@@ -120,15 +120,8 @@ class _homepageState extends State<homepage> {
             post_UserData(userid, username, userimage);
           }
         });
-        store_user_detail(userid, userimage, username);
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ShowDataPage()));
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print('some error');
-        break;
-      case FacebookLoginStatus.error:
-        print('some error');
+            context, MaterialPageRoute(builder: (context) => Category()));
         break;
     }
   }
@@ -156,7 +149,7 @@ class _homepageState extends State<homepage> {
     String value = await storage.read(key: 'valid_token');
     if (value != null) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ShowDataPage()));
+          context, MaterialPageRoute(builder: (context) => Category()));
     }
   }
 
