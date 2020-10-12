@@ -43,22 +43,13 @@ class _CategoryState extends State<Category> {
         centerTitle: true,
         backgroundColor: Colors.deepPurpleAccent,
       ),
-      body: Column(
-        children: [
-          new Container(
-            height: MediaQuery.of(context).size.height/2-80,
-            child: new ListView.builder(
-              itemBuilder: (_, index) {
-                return categoriesWidget(index);
-              },
-              itemCount: listCategories.length,
-            ),
-          ),
-          new Container(
-            height: MediaQuery.of(context).size.height/2,
-            child: ShowDataPage(),
-          )
-        ],
+      body: new Container(
+        child: new ListView.builder(
+          itemBuilder: (_, index) {
+            return categoriesWidget(index);
+          },
+          itemCount: listCategories.length,
+        ),
       ),
     );
   }

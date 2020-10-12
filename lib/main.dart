@@ -1,5 +1,6 @@
 import 'package:firebaseapp/components/login_button.dart';
-import 'package:firebaseapp/homepage/category.dart';
+import 'package:firebaseapp/homepage/allPostDataPage.dart';
+// import 'package:firebaseapp/homepage/category.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -77,7 +78,7 @@ class _homepageState extends State<homepage> {
       }
     });
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Category()));
+        context, MaterialPageRoute(builder: (context) => allPostDataPage()));
     return null;
   }
 
@@ -121,7 +122,7 @@ class _homepageState extends State<homepage> {
           }
         });
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Category()));
+            context, MaterialPageRoute(builder: (context) => allPostDataPage()));
         break;
     }
   }
@@ -149,7 +150,7 @@ class _homepageState extends State<homepage> {
     String value = await storage.read(key: 'valid_token');
     if (value != null) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Category()));
+          context, MaterialPageRoute(builder: (context) => allPostDataPage()));
     }
   }
 

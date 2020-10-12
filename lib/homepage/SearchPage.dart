@@ -55,7 +55,7 @@ class _searchPageState extends State<searchPage> {
       if (data.friendName
           .toString()
           .toLowerCase()
-          .contains(searchController.text)) {
+          .contains(searchController.text.toLowerCase())) {
         setState(() {
           searchList.add(data);
         });

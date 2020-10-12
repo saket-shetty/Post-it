@@ -468,21 +468,24 @@ class _ShowDataPageState extends State<ShowDataPage> {
                                 : new Container(),
                           ],
                         ),
-                        new Text(
-                          '$message',
-                          maxLines: 5,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w400,
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0, bottom: 10),
+                          child: new Text(
+                            '$message',
+                            maxLines: 5,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
-                        new Padding(
-                          padding: EdgeInsets.all(7.0),
-                        ),
-                        new Padding(
-                          padding: EdgeInsets.only(top: 10.0),
-                        ),
+                        // new Padding(
+                        //   padding: EdgeInsets.all(7.0),
+                        // ),
+                        // new Padding(
+                        //   padding: EdgeInsets.only(top: 10.0),
+                        // ),
                         new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
