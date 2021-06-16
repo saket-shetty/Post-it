@@ -36,10 +36,6 @@ class _editProfileState extends State<editProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      resizeToAvoidBottomPadding: true,
-
-      //App bar of the contact page
-
       appBar: new AppBar(
         title: new Text(
           'Edit Profile',
