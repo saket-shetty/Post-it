@@ -1,4 +1,4 @@
-package com.example.firebaseapp;
+package com.saketshetty.postit;
 import io.flutter.embedding.android.FlutterActivity;
 public class MainActivity extends FlutterActivity {
   // @Override
